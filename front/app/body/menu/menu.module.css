@@ -1,0 +1,52 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  height: 100%;  
+  min-width: 200px;  
+  padding: 0px 10px;
+  overflow: hidden;
+}
+
+.menu > .menuItem {
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #2b2b2b;
+}
+
+.menu > .menuItem:hover,
+.menu > .menuItem.selected {
+  background-color: #1f1f1f;
+  border: 1px solid #2b2b2b;
+}
+
+.menu > .menuItem > .itemIcon {
+  width: 30px;
+  height: 30px;
+  path {
+    fill: #838585;
+  };
+}
+
+.menu > .menuItem:hover > .itemIcon,
+.menu > .menuItem.selected > .itemIcon {
+  path {
+    fill: #c3cacc;
+  };
+}
+
+.menu > .menuItem > .itemLabel {
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 600;
+  color: #838585;
+}
+
+.menu > .menuItem:hover > .itemLabel,
+.menu > .menuItem.selected > .itemLabel {
+  color: #c3cacc;
+}

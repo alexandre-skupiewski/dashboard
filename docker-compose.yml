@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+
+  api:
+    build: ./api
+    container_name: dashboard_api  
+    restart: unless-stopped
+    environment:     
+      - API_TOKEN_ID=supersecrettoken 
+      - DATA_FOLDER=/data 
+    volumes:
+      - ./api:/app  
+      - ./data:/data
+    networks:
+      - network
+    ports:      
+      - "5001:5001"
+    stdin_open: true      # garde le conteneur “ouvert” pour l’interactif
+    tty: true             # alloue un terminal pour le shell
+
+  front:
+    build: ./front
+    container_name: dashboard_front  
+    restart: unless-stopped
+    environment:     
+      - API_TOKEN_ID=supersecrettoken   
+      - DATA_FOLDER=/data   
+    volumes:
+      - ./front:/app
+      - ./data:/data
+    networks:
+      - network
+    ports:      
+      - "5002:5002"
+    stdin_open: true      # garde le conteneur “ouvert” pour l’interactif
+    tty: true             # alloue un terminal pour le shell
+
+  mysql:
+    build: ./db
+    container_name: dashboard_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: supersecretpassword
+      MYSQL_DATABASE: dashboard
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    volumes:
+      - ./db/data:/var/lib/mysql
+    networks:
+      - network
+    ports:
+      - "3306:3306"
+
+  n8n:
+    build: ./n8n
+    container_name: dashboard_n8n   
+    #restart: unless-stopped
+    environment:  
+      - DB_SQLITE_VACUUM_ON_STARTUP=true
+      - N8N_SECURE_COOKIE=false
+    networks:
+      - network
+    volumes:
+      - ./n8n/data:/home/node/.n8n
+    ports:
+      - "5678:5678"  
+
+networks:
+  network:
+    driver: bridge
