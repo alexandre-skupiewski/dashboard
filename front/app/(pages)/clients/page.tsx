@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback} from "react";
 import Client from "../../../models/client";
 import { ColumnProps }from "@/components/table/table";
 import Table from "@/components/table/table";
+import Views from "@/helpers/views";
+import { Event } from "@/components/views/views";
 
 export default function Clients() { 
   useEffect(() => {}, []);
@@ -14,8 +16,9 @@ export default function Clients() {
     { title: "Email", accessor: "email", style: {flexGrow: 1} },
   ];
 
-  const onRowSelected = (client: Client) => {
-    console.log("Client sélectionné :", client);
+  const onRowSelected = (client: Client) => {   
+    Views.instance.open("Client | " + client.id, client);
+    Event.open("Client | " + client.id, client);
   };
 
   return (    
