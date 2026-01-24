@@ -1,3 +1,3 @@
 Default admin user -->
-user: admin@dashboard.com
-password: 1234578
+user: alexandre.skupiewski@gmail.com
+password: Skup76!4n8n

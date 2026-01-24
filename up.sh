@@ -1,1 +1,1 @@
-docker-compose -p dashboard up -d api front n8n mysql
+docker-compose -p dashboard up -d api front n8n db

@@ -14,10 +14,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
   views: React.ReactNode
-}) {
+}) {  
   return (
     <html lang="en">
-      <Body views={views}>{children}</Body>     
+      <Body viewsChildren={views}>{children}</Body>     
     </html>
   );
 }

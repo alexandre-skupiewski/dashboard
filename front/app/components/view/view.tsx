@@ -1,12 +1,17 @@
 "use client";
 
-import css from './view.module.css';
+import css from './table.module.css';
 
-export default function View({children}: {children: React.ReactNode}) {
+interface TableProps {
+  id?: string;
+  children: React.ReactNode;
+  onClose?: () => void;
+}
+
+export default function Table({ id, children, onClose }: TableProps) {
   return (
-    <div className={css.view}>  
-    sdfsdf
-          <div>{children}</div>
+    <div className={css.table}>  
+      
     </div>
   );
 }

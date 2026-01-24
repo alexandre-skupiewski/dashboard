@@ -1,0 +1,14 @@
+.row {  
+  display: flex;   
+  border-bottom: 1px solid #2b2b2b;
+  padding: 3px 0px;
+  cursor: pointer;
+}
+
+.row:last-child {    
+  border-bottom: 0;
+}
+
+.row:hover {  
+  background-color: #2b2b2b;
+}

@@ -4,7 +4,6 @@
   background-color: #1f1f1f;
   border-top: 1px solid #2b2b2b;
   border-left: 1px solid #2b2b2b;
-  border-radius: 15px 0px 0px 0px;
-  padding: 20px;
+  border-radius: 15px 0px 0px 0px;  
   overflow: auto;
 }

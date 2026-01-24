@@ -7,6 +7,7 @@ services:
     container_name: dashboard_api  
     restart: unless-stopped
     environment:     
+      - DB_HOST=db
       - API_TOKEN_ID=supersecrettoken 
       - DATA_FOLDER=/data 
     volumes:
@@ -36,7 +37,7 @@ services:
     stdin_open: true      # garde le conteneur “ouvert” pour l’interactif
     tty: true             # alloue un terminal pour le shell
 
-  mysql:
+  db:
     build: ./db
     container_name: dashboard_mysql
     restart: unless-stopped
