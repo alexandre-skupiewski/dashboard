@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Body from "./body/body";
+import Body from "../components/body/body";
 import React from "react";
 
 export const metadata: Metadata = {
@@ -9,15 +9,13 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-  views
+  children
 }: {
   children: React.ReactNode
-  views: React.ReactNode
 }) {  
   return (
     <html lang="en">
-      <Body viewsChildren={views}>{children}</Body>     
+      <Body>{children}</Body>     
     </html>
   );
 }

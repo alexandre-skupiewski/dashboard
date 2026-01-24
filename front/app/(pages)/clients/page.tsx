@@ -2,14 +2,10 @@
 
 import { useEffect, useState, useCallback} from "react";
 import Client from "../../../models/client";
-import { ColumnProps }from "@/app/components/table/table";
-import Table from "@/app/components/table/table";
+import { ColumnProps }from "@/components/table/table";
+import Table from "@/components/table/table";
 
-export default function Clients() {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+export default function Clients() { 
   useEffect(() => {}, []);
 
   const columns: ColumnProps<Client>[] = [  
@@ -18,7 +14,11 @@ export default function Clients() {
     { title: "Email", accessor: "email", style: {flexGrow: 1} },
   ];
 
+  const onRowSelected = (client: Client) => {
+    console.log("Client sélectionné :", client);
+  };
+
   return (    
-    <Table<Client> fetch={Client.fetch} columns={columns} />   
+    <Table<Client> fetch={Client.fetch} columns={columns} onRowSelected={onRowSelected} />   
   );
 }

@@ -14,9 +14,10 @@ export interface ColumnProps<T> {
 interface TableProps<T> {
   fetch: ( page: number, pageSize: number ) => Promise<T[]>;
   columns: ColumnProps<T>[];
+  onRowSelected?: (model: T) => void;
 }
 
-export default function Table<T>({ fetch, columns }: TableProps<T>) {
+export default function Table<T>({ fetch, columns, onRowSelected }: TableProps<T>) {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +48,7 @@ export default function Table<T>({ fetch, columns }: TableProps<T>) {
   return (
     <div style={style}>  
       <Header<T> columns={columns} />  
-      <Body<T> columns={columns} data={data} />
+      <Body<T> columns={columns} data={data} onRowSelected={onRowSelected}/>
       <Footer<T> />
     </div>
   );

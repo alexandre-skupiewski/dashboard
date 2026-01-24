@@ -5,7 +5,7 @@ import Header from "./header/header";
 import Footer from "./footer/footer";
 import Menu from "./menu/menu";
 import Content from "./content/content";
-import View from "../components/view/view";
+import View from "../view/view";
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import css from './menu.module.css';

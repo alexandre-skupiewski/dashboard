@@ -1,6 +1,6 @@
-import HomeIcon from '@/app/components/icons/home';
-import FileIcon from '@/app/components/icons/file';
-import ClientsIcon from '@/app/components/icons/users';
+import HomeIcon from '@/components/icons/home';
+import FileIcon from '@/components/icons/file';
+import ClientsIcon from '@/components/icons/users';
 
 export const Items = [
   {
