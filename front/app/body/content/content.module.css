@@ -1,0 +1,50 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: #1f1f1f;
+  border-top: 1px solid #2b2b2b;
+  border-left: 1px solid #2b2b2b;
+  border-radius: 0px 0px 0px 0px;    
+}
+
+.body {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+}
+
+.container {
+  display: flex;   
+  flex-grow: 1; 
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.page {
+  display: none;
+  flex-grow: 1;
+}
+
+.selectedPage {
+  display: flex;
+}
+
+.empty {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyIcon {
+  width: 350px;
+  height: 350px;
+  path {
+    fill: #181818;
+  }
+}

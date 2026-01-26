@@ -5,7 +5,6 @@ import Header from "./header/header";
 import Footer from "./footer/footer";
 import Menu from "./menu/menu";
 import Content from "./content/content";
-import Views from "@/components/views/views";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,10 +22,9 @@ export default function Body({ children}: { children: React.ReactNode }) {
       <Header/>
       <main>
         <Menu/>        
-        <Content>{children}</Content>
+        <Content/>
       </main>
       <Footer/>  
-      <Views/> 
     </body>
   );
 }

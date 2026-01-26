@@ -1,0 +1,44 @@
+.item {
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 3px;
+  border: 1px solid #2b2b2b;
+  cursor: pointer;
+}
+
+.item:hover,
+.item.selected {
+  background-color: #1f1f1f;
+  border: 1px solid #2b2b2b;
+}
+
+.item > .itemIcon {
+  width: 30px;
+  height: 30px;
+  path {
+    fill: #838585;
+  };
+}
+
+.item:hover > .itemIcon,
+.item.selected > .itemIcon {
+  path {
+    fill: #c3cacc;
+  };
+}
+
+.item > .itemLabel {
+  display: flex;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 600;
+  color: #838585;
+}
+
+.item:hover > .itemLabel,
+.item.selected > .itemLabel {
+  color: #c3cacc;
+}

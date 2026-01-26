@@ -1,10 +1,10 @@
 "use client";
 
-interface ViewProps {
+interface Props {
   
 }
 
-export default function Table({  }: ViewProps) {
+export default function Table({  }: Props) {
   return (
     <div style={style}>  
       sfsdf

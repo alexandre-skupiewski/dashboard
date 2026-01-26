@@ -1,0 +1,30 @@
+.tabsContainer {
+  display: flex;  
+  
+  background-color: #181818; 
+  box-shadow: inset 0 -1px 0 0 #2b2b2b; 
+}
+
+.tabs {
+  display: flex;      
+  background-color: #1f1f1f; 
+  overflow: auto;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

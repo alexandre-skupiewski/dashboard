@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Body from "../components/body/body";
+import Body from "./body/body";
 import React from "react";
 
 export const metadata: Metadata = {

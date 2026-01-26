@@ -1,0 +1,9 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  height: 100%;  
+  min-width: 200px;  
+  padding: 0px 10px;
+  overflow: hidden;
+}

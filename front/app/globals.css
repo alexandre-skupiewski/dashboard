@@ -46,20 +46,6 @@ body > main {
     height: 100%;    
   }
 
-body > main > .content-container {
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-}
-
-body > main > .content-container > * {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

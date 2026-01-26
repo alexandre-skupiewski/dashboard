@@ -19,7 +19,7 @@ export default function Row<T>({ columns, model, onRowSelected}: RowProps<T>) {
   return (    
     <div 
       className={css.row}
-      onClick={() => onRowSelected?.(model)}
+      onDoubleClick={() => onRowSelected?.(model)}
     >  
       {columns.map((col) => (
         <Column<T> 

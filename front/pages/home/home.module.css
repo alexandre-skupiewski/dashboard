@@ -1,0 +1,14 @@
+.home {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  width: 350px;
+  height: 350px;
+  path {
+    fill: #181818;
+  }
+}
