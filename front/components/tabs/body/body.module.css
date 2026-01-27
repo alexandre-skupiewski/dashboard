@@ -1,0 +1,14 @@
+.body {
+  display: flex; 
+  flex-grow: 1;  
+  overflow: auto;
+}
+
+.item {
+  display: none; 
+  flex-grow: 1; 
+}
+
+.selected {
+  display: flex; 
+}

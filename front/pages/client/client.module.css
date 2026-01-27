@@ -1,5 +1,5 @@
-.tabs {
+.client {
   display: flex;  
   flex-grow: 1;
-  flex-direction: column;
+  padding: 0px 15px;
 }

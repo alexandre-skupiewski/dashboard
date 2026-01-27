@@ -27,16 +27,18 @@ export default function Tabs() {
     };    
   }, []);
 
-  return (
-    <div className={css.tabsContainer}>
-      <nav className={css.tabs}>        
-        {Pages.getPages().map(page => {        
-          return (
-            <Item key={page.id} page={page}/>
-          );
-        })}
-      
-      </nav>
-    </div>
+  return (  
+    Pages.getPages().length > 0 ? (
+      <div className={css.tabsContainer}>
+        <nav className={css.tabs}>        
+          {Pages.getPages().map(page => {        
+            return (
+              <Item key={page.id} page={page}/>
+            );
+          })}
+        
+        </nav>        
+      </div>
+    ):(<></>)
   );
 }

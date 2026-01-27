@@ -1,0 +1,13 @@
+.text {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;  
+}
+
+.label {
+  display: flex;
+  font-size: 12px; 
+  line-height: 12px;
+  color: #c3cacc;
+;
+}

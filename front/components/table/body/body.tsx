@@ -18,11 +18,11 @@ interface BodyProps<T> {
 export default function Body<T>({ columns, data, onRowSelected }: BodyProps<T>) {
   return (    
     <div className={css.body}>
-      <div className={css.bodyContainer}>
+      
         {data.map((row, i) => (
           <Row<T> columns={columns} model={row} onRowSelected={onRowSelected} key={String(i)}/>        
         ))}
-      </div>  
+     
     </div>  
   );
 }

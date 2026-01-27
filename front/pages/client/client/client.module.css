@@ -1,0 +1,7 @@
+.client {
+  display: flex; 
+  flex-direction: column;
+  row-gap: 15px;
+  padding: 30px 15px;  
+  flex-basis: 50%;
+}

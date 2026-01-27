@@ -6,7 +6,7 @@ import CirclePlay from '@/components/svgs/circlePlay';
 
 export default function Content() {  
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  
+ 
   useEffect(() => {   
      const offOpen = Pages.onOpen((page: Page) => {  
       setSelectedId(page.id);
@@ -21,6 +21,8 @@ export default function Content() {
       offClose();
     };   
   }, []);
+
+  console.log("render content");
 
   return (    
     <section className={css.content}>

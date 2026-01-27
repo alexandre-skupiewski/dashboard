@@ -12,6 +12,21 @@ export default class Client extends Model {
     this.email = email ? email : "";
   }
 
+  async fetch() {
+    const params = new URLSearchParams({    
+    });
+
+    const res = await fetch("/api/clients/" + this.id);
+        
+    if (!res.ok) {
+        throw new Error("Erreur lors du chargement");
+    }
+
+    const data = await res.json()
+
+    return new Client(data.id, data.name, data.email)
+  }
+
   static async fetch(page: number = 1, pageSize: number = 100) {
     const params = new URLSearchParams({
       page: page.toString(),

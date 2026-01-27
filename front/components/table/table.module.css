@@ -1,0 +1,21 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.loading {
+  display: flex; 
+  flex-direction: column;
+  row-gap: 100px;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.error {
+  display: flex; 
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}

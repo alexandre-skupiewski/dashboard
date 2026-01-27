@@ -5,12 +5,12 @@ export class Page {
   public icon?: any;
   public selected: boolean
 
-  constructor(component: React.FC, id: string, title: string, icon?: any, selected = false) {
+  constructor(component: React.FC, id: string, title: string, icon?: any) {
     this.id = id;
     this.title = title;
     this.component = component;
     this.icon = icon;
-    this.selected = selected;
+    this.selected = false;
   }
 }
 
@@ -22,15 +22,14 @@ export class Pages {
   static open(page: Page) {
     const exists = this.pages.some(p => p.id === page.id);
 
-    if (exists) {
-    } else {
+    if (!exists) {    
       this.pages.push(page)
     }
 
     this.pages = this.pages.map(p => ({
-        ...p,
-        selected: p.id === page.id
-      }));
+      ...p,
+      selected: p.id === page.id
+    }));
 
     this.openEvents.forEach(cb => cb(page));
   }

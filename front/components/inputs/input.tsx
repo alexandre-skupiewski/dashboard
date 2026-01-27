@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 
 export interface InputProps {
-  title: string; 
-  tabIndex: number;
+  title?: string | ""; 
+  tabIndex?: number | 0;
 }
 
-export default function Input({ title = "", tabIndex = 0}: InputProps) {
+export default function Input({ title, tabIndex}: InputProps) {
  
   useEffect(() => {
    

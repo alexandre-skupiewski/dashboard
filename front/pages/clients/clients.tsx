@@ -18,9 +18,11 @@ export default function Clients({ }: Props) {
   ];
 
   const onRowSelected = (client: ClientModel) => { 
-    const page = new Page(() => <Client client={client} />, "client." + client.id, "Client | " + client.id, UserSvg);    
+    const page = new Page(() => <Client client={client} />, "client." + client.id, "Client | " + client.name, UserSvg);    
     Pages.open(page)
   };
+
+  console.log("render client list");
 
   return (
     <Table<ClientModel> fetch={ClientModel.fetch} columns={columns} onRowSelected={onRowSelected} />  
