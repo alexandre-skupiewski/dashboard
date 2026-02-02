@@ -3,6 +3,9 @@
   flex-direction: column;
   row-gap: 15px;
   padding: 15px;
-  border-radius: 5px;
+  background-color: #222323;
+}
+
+.panel.hover:hover {
   background-color: #252728;
 }

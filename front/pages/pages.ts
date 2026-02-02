@@ -34,6 +34,9 @@ export class Pages {
     this.openEvents.forEach(cb => cb(page));
   }
 
+  static updateTitle(page: Page) {
+  }
+
   static onOpen(callback: (page: Page) => void) {
     if (!this.openEvents.includes(callback)) {
       this.openEvents.push(callback);

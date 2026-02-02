@@ -16,8 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function Body({ children}: { children: React.ReactNode }) {   
-  console.log("render body");  
+export default function Body({ children}: { children: React.ReactNode }) {    
   return (
     <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       <Header/>

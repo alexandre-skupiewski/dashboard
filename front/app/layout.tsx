@@ -12,8 +12,7 @@ export default function RootLayout({
   children
 }: {
   children: React.ReactNode
-}) {  
-  console.log("render latoyut");
+}) {    
   return (
     <html lang="en">
       <Body>{children}</Body>     

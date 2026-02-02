@@ -1,25 +1,28 @@
 "use client";
 
-
-import { ReactNode } from "react";
+import { memo } from "react";
 import css from './text.module.css';
 import TextInput from "@/components/inputs/text"
 import { TextProps } from "@/components/inputs/text"
 
 export interface Props extends TextProps {
-  children?: ReactNode;
+  label?: string
 }
 
-export default function Text({ title, children, tabIndex, placeholder}: Props) {
+function Text({ title="", tabIndex=0, placeholder, value, onChange, label}: Props) {
   return (
     <div className={css.text} title={title}>
       {
-        children ? (
-          <div className={css.label}>{children}</div>
+        label ? (
+          <div className={css.label}>{label}</div>
         ) : (<></>)
       }      
       
-      <TextInput placeholder={placeholder} tabIndex={tabIndex}/>           
+      <TextInput placeholder={placeholder} tabIndex={tabIndex} value={value} onChange={onChange} />           
     </div>
   );
 }
+
+export default memo(Text, (prevProps, nextProps) => {
+  return prevProps.value === nextProps.value;
+});

@@ -6,13 +6,16 @@ import CirclePlay from '@/components/svgs/circlePlay';
 
 export default function Content() {  
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [pages, setPages] = useState<any[]>([]);
  
   useEffect(() => {   
      const offOpen = Pages.onOpen((page: Page) => {  
+      setPages(Pages.getPages());
       setSelectedId(page.id);
     });
     
     const offClose = Pages.onClose(() => {  
+      setPages(Pages.getPages());
       setSelectedId(Pages.getSelectedPage()?.id ?? "");
     });
 
@@ -22,16 +25,14 @@ export default function Content() {
     };   
   }, []);
 
-  console.log("render content");
-
   return (    
     <section className={css.content}>
       <Tabs/>
       <div className={css.body}>
         <div className={css.container}>
           {
-            Pages.getPages().length > 0 ? (
-              Pages.getPages().map(page => {                
+            pages.length > 0 ? (
+              pages.map(page => {                
                 return (
                   <div className={`${css.page} ${page.selected ? css.selectedPage : ''}`} key={page.id}>
                     <page.component/>

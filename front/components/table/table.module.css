@@ -15,7 +15,24 @@
 
 .error {
   display: flex; 
+  flex-direction: column;
+  row-gap: 50px;
   flex-grow: 1;
+  font-size: 14px;
+  line-height: 18px;
   align-items: center;
   justify-content: center;
+}
+
+.errorIcon {
+  display: flex;   
+  width: 150px;
+  height: 150px;
+  path {
+    fill: #181818;
+  }
+}
+
+.errorText {
+  display: flex;   
 }

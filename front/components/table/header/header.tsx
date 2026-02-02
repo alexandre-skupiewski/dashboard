@@ -1,22 +1,23 @@
 "use client";
 
 import Column from "./column/column";
+import { Model } from "@/models/models";
 
-export interface ColumnProps<T> {
+export interface ColumnProps<M extends Model> {
   title: string;
-  accessor: keyof T;
+  accessor: keyof M;
   style: object
 }
 
-interface HeaderProps<T> {  
-  columns: ColumnProps<T>[];
+interface HeaderProps<M extends Model> {  
+  columns: ColumnProps<M>[];
 }
 
-export default function Header<T>({ columns }: HeaderProps<T>) {
+export default function Header<M extends Model>({ columns }: HeaderProps<M>) {
   return (    
     <div style={style}>  
       {columns.map((col) => (
-        <Column<T> 
+        <Column<M> 
           title={col.title} 
           accessor={col.accessor} 
           style={col.style} 

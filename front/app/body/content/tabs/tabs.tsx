@@ -8,17 +8,17 @@ interface Props {
 
 export default function Tabs() { 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [items, setItems] = useState<string[]>([]); // tableau des ids ouverts
+  const [pages, setPages] = useState<any[]>([]);
 
   useEffect(() => {   
-    const offOpen = Pages.onOpen((page: Page) => {  
+    const offOpen = Pages.onOpen((page: Page) => { 
+      setPages(Pages.getPages());
       setSelectedId(page.id);
-      setItems(Pages.getPages().map(p => p.id));
     });
     
-    const offClose = Pages.onClose(() => {  
+    const offClose = Pages.onClose(() => {   
+      setPages(Pages.getPages())
       setSelectedId(Pages.getSelectedPage()?.id ?? "");
-      setItems(Pages.getPages().map(p => p.id))
     });
 
     return () => {
@@ -28,10 +28,10 @@ export default function Tabs() {
   }, []);
 
   return (  
-    Pages.getPages().length > 0 ? (
+    pages.length > 0 ? (
       <div className={css.tabsContainer}>
         <nav className={css.tabs}>        
-          {Pages.getPages().map(page => {        
+          {pages.map(page => {        
             return (
               <Item key={page.id} page={page}/>
             );

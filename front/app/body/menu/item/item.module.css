@@ -30,6 +30,11 @@
   };
 }
 
+.item:focus{  
+  outline: 0;     
+  border: 1px solid #0078d4;
+}
+
 .item > .itemLabel {
   display: flex;
   font-size: 14px;

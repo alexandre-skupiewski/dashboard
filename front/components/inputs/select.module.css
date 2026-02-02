@@ -1,0 +1,22 @@
+.select {  
+  display: flex;
+  background-color: #313131;  
+  border: 1px solid #3a3a3a;
+  font-size: 14px;
+  line-height: 14px;
+  padding: 4px 15px 4px 4px;
+  color: #c3cacc;
+}
+
+.option {
+  background-color: #313131;
+  color: #c3cacc;
+}
+
+.option:hover {
+  background-color: #04395e; /* ⚠️ fonctionne surtout sur Firefox */
+}
+
+.option:checked {
+  background-color: #04395e;
+}

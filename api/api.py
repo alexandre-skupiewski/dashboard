@@ -31,3 +31,17 @@ async def check_token(request: Request, next):
 @app.get("/clients")
 async def searchClient(request: Request):  
     return clients.search(db, page=int(request.query_params.get("page", 1)), pageSize=int(request.query_params.get("pageSize", 100))) 
+
+@app.get("/clients/{id}")
+async def getClient(id: int):
+    return clients.get(db, id) 
+
+@app.put("/clients")
+async def createClient(request: Request):
+    data = await request.json()
+    return clients.create(db, data)   
+
+@app.patch("/clients/{id}")
+async def updateClient(id: int, request: Request):
+    data = await request.json()
+    return clients.update(db, id, data)  

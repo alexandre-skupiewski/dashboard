@@ -9,13 +9,24 @@ interface Props {
 }
 
 export default function Item({ item, selectedId }: Props) {
-
   const page = new Page(item.page, item.id, item.label, item.icon); 
   const className = `${css.item} ${selectedId ? css.selected : ''}`;
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {   
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault(); 
+      Pages.open(page)
+    }
+  };
+
   return (
     
-    <div className={className} onClick={() => Pages.open(page)}>  
+    <div 
+      className={className} 
+      onClick={() => Pages.open(page)}
+      onKeyDown={handleKeyDown}
+      tabIndex={selectedId == item.id ? -1 : 0}
+    >  
       <div className={css.itemIcon}>{item.icon && <item.icon />}</div>
       <div className={css.itemLabel}>{item.label}</div>
     </div>

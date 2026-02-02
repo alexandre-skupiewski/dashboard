@@ -29,6 +29,17 @@
   };
 }
 
+.item:focus{
+  outline: 1px solid #0078d4;
+  outline-offset: -1px;
+}
+
+.item:hover,
+.item.selected {
+  outline: 0;
+}
+
+
 .item:hover > .itemIcon,
 .item.selected > .itemIcon {
   path {
