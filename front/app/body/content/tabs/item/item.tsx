@@ -6,7 +6,7 @@ interface Props {
   page: Page
 }
 
-export default function Item({ page}: Props) {
+export default function Item({ page }: Props) {
   const className = `${css.item} ${page.selected ? css.selected : ''}`;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {   

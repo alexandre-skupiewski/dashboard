@@ -87,9 +87,18 @@ export default function Client({ client } : Props) {
       clientToSave.phone3 = phone3;
       clientToSave.phone4 = phone4;
 
+      const id = clientToSave.id;
+
       await clientToSave.save(); 
 
       client.copy(clientToSave);
+
+      if(id) 
+        Pages.updateTitle("client." + client.id, "Client | " + client.name);
+      else {
+        Pages.updateTitle("client.new", "Client | " + client.name);
+        Pages.updateId("client.new", "client." + client.id);
+      }        
       
       setLoadingText(null);
 
@@ -104,7 +113,7 @@ export default function Client({ client } : Props) {
 
   async function add() {
     const newClient = new ClientModel();
-    const page = new Page(() => <Client client={newClient} />, "client.new", "Nouveau client", UserSvg);    
+    const page = new Page(<Client client={newClient} />, "client.new", "Nouveau client", UserSvg);    
     Pages.open(page)
   }
 

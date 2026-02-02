@@ -18,7 +18,7 @@ export default function Clients() {
   ];
 
   const onRowSelected = (model: ClientModel) => { 
-    const page = new Page(() => <Client client={model} />, "client." + model.getId(), "Client | " + model.get("name"), UserSvg);    
+    const page = new Page(<Client client={model}/>, "client." + model.getId(), <div>Client | {model.get("name")}</div>, UserSvg);    
     Pages.open(page)
   };
 

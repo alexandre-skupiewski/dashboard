@@ -24,25 +24,25 @@ export const Items = [
     label: "Clients",
     path: "/clients",
     icon: ClientsSvg,
-    page: Clients
+    page: <Clients/>
   }, {
     id: "products",
     label: "Produits",
     path: "/products",
     icon: CubesSvg,
-    page: Clients
+    page: <Clients/>
   }, {
     id: "offers",
     label: "Offres",
     path: "/offers",
     icon: FileInvoiceSvg,
-    page: Clients
+    page: <Clients/>
   }, {
     id: "orders",
     label: "Commandes",
     path: "/orders",
     icon: FileInvoiceDollarSvg,
-    page: Clients
+    page: <Clients/>
   } 
 ]
 
