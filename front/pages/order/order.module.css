@@ -1,9 +1,7 @@
-.body {  
-  display: flex;    
-  flex-grow: 1;    
-  flex-direction: column;
-  overflow: auto;
-  padding: 10px;
+.client {
+  display: flex;  
+  flex-grow: 1;
+  padding: 0px 15px;
 }
 
 .loading {

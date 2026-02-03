@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import Model from "@/models/model";
+import Model from "@/helpers/models/model";
 
-export { default as Model } from "@/models/model";
-export { default as Collection } from "@/models/collection";
-export { default as useModel } from "@/models/useModel";
-export { default as useCollection } from "@/models/useCollection";
+export { default as Model } from "@/helpers/models/model";
+export { default as Collection } from "@/helpers/models/collection";
+export { default as useModel } from "@/helpers/models/useModel";
+export { default as useCollection } from "@/helpers/models/useCollection";
 
 type ModelEntry<T> = {
-  model: T    
+  model: T
   refCount: number
 }
 

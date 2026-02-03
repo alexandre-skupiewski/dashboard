@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Model from "@/models/model";
+import Model from "@/helpers/models/model";
 import { Models } from "./models";
 
 export default function useModel<M extends Model>(
@@ -7,15 +7,15 @@ export default function useModel<M extends Model>(
 ): [M, (model: M) => void] {
   const [model, setModel] = useState<M>(initialModel);
 
- /* function commit() {
-    initialModel.copy(model);
-  }*/
-  
-  useEffect(() => {   
+  /* function commit() {
+     initialModel.copy(model);
+   }*/
+
+  useEffect(() => {
 
     console.log("useModel mounted", model);
-    
-    if(model.getId())
+
+    if (model.getId())
       Models.use(model.getKey());
 
     return () => {

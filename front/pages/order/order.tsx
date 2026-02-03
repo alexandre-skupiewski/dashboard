@@ -1,29 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import css from './body.module.css';
-import Row from "./row/row";
-import { Model, Collection } from "@/helpers/models/models";
-import Loader from "@/components/loaders/loader2"
+import css from './order.module.css';
+import OrderInfos from "./order/order"
 import CircleExclamationSvg from "@/components/svgs/circleExclamation"
-import { ColumnProps } from "../table";
+import Loader from "@/components/loaders/loader2"
+import { OrderModel } from "@/models/orders";
+import { useModel } from "@/helpers/models/models";
 
-interface Props<M extends Model> {
-  columns: ColumnProps<M>[];
-  collection?: Collection<M>;
-  onRowSelected?: (model: M) => void;
+interface Props {
+  order: OrderModel
 }
 
-export default function Body<M extends Model>({ columns, collection, onRowSelected }: Props<M>) {
+export default function Client({ order }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [model, setModel] = useModel<OrderModel>(order);
 
   useEffect(() => {
     const load = async () => {
       try {
-        await collection?.fetch(1, 100);        
-      } catch {
-        setError("Erreur lors du chargement");
+        await model.fetch();
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError(String(err));
+        }
       } finally {
         setLoading(false);
       }
@@ -49,12 +52,11 @@ export default function Body<M extends Model>({ columns, collection, onRowSelect
     );
   }
 
+  const selectedTab = new Tab(() => <OrderInfos order={order} />, "client", "Client", true);
+
   return (
-    <div className={css.body}>
-      {collection?.getModels().map((model, i) => (
-        <Row<M> columns={columns} model={model} onRowSelected={onRowSelected} key={String(i)} />
-      ))}
+    <div className={css.order}>
+     
     </div>
   );
 }
-

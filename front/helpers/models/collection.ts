@@ -1,15 +1,15 @@
 import Api from "@/helpers/api"
-import Model from "@/models/model";
+import Model from "@/helpers/models/model";
 
 export default class Collection<M extends Model> {
-    protected static url: string; 
+    protected static url: string;
     protected models: M[] = [];
-    
+
     constructor(models: M[] = []) {
         this.models = models;
     }
 
-    async fetch(page?: number, pageSize?: number): Promise<void> {}
+    async fetch(page?: number, pageSize?: number): Promise<void> { }
 
     getModels(): M[] {
         return this.models;

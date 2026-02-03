@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Models, Model, Collection } from "./models";
+import { Models, Model, Collection } from "@/helpers/models/models";
 
 export default function useCollection<C extends Collection<M>, M extends Model>(
   initialCollection: C
@@ -7,7 +7,7 @@ export default function useCollection<C extends Collection<M>, M extends Model>(
 
   const [collection, setCollection] = useState<C>(initialCollection);
 
-  const setModels = (models: M[] ) => {
+  const setModels = (models: M[]) => {
     const newCollection = collection.constructor as { new(models: M[]): C };
     setCollection(new newCollection(models));
   }
@@ -17,15 +17,15 @@ export default function useCollection<C extends Collection<M>, M extends Model>(
     setCollection(new Collection(collection.getModels()));*/
   }
 
-  useEffect(() => {   
+  useEffect(() => {
 
     console.log("useCollection mounted", collection);
 
-  
+
     return () => {
       console.log("useCollection unmounted", collection);
       collection.getModels().forEach(m => Models.release(m.getKey()));
-     
+
     };
   }, []);
 

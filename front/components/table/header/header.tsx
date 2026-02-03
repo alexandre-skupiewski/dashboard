@@ -1,29 +1,24 @@
 "use client";
 
 import Column from "./column/column";
-import { Model } from "@/models/models";
+import { Model } from "@/helpers/models/models";
+import { ColumnProps } from "../table";
 
-export interface ColumnProps<M extends Model> {
-  title: string;
-  accessor: keyof M;
-  style: object
-}
-
-interface HeaderProps<M extends Model> {  
+interface HeaderProps<M extends Model> {
   columns: ColumnProps<M>[];
 }
 
 export default function Header<M extends Model>({ columns }: HeaderProps<M>) {
-  return (    
-    <div style={style}>  
+  return (
+    <div style={style}>
       {columns.map((col) => (
-        <Column<M> 
-          title={col.title} 
-          accessor={col.accessor} 
-          style={col.style} 
-          key={col.accessor as string} />       
+        <Column<M>
+          title={col.title}
+          accessor={col.accessor}
+          style={col.style}
+          key={col.accessor as string} />
       ))}
-    </div>  
+    </div>
   );
 }
 

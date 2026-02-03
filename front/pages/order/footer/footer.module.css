@@ -1,0 +1,33 @@
+.footer {
+  display: flex;  
+  padding: 5px 0px;
+  border-top: 1px solid #2b2b2b;
+  align-items: center;
+  justify-content: end;
+  column-gap: 15px;
+}
+
+.left {
+  display: flex; 
+}
+
+.loadingIcon {
+  display: flex; 
+  width: 30px;
+}
+
+.loadingText {
+  display: flex; 
+  margin-left: 10px;  
+  font-size: 13px;
+  align-items: center;
+  color: #838585;
+}
+
+.right {
+  display: flex; 
+  flex-grow: 1;
+  justify-content: end;  
+  column-gap: 5px;
+  padding-right: 4px;
+}

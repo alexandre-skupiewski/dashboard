@@ -1,6 +1,6 @@
-import {Model, Collection} from "./models";
+import { Model, Collection } from "../helpers/models/models";
 import Api from "@/helpers/api"
-import { Models } from "@/models/models";
+import { Models } from "@/helpers/models/models";
 
 export class ClientModel extends Model {
   protected static url: string = "clients";
@@ -29,7 +29,7 @@ export class ClientModel extends Model {
     this.id = id ? id : null;
     this.laboruId = "";
     this.name = "";
-    this.description = "";   
+    this.description = "";
     this.email = "";
     this.vat = "";
     this.vatType = "";
@@ -42,7 +42,7 @@ export class ClientModel extends Model {
     this.archivedAt = "";
     this.createdAt = "";
     this.updatedAt = "";
-  } 
+  }
 }
 
 export class ClientCollection extends Collection<ClientModel> {
@@ -55,14 +55,14 @@ export class ClientCollection extends Collection<ClientModel> {
     });
 
     const data = await Api.GET("clients?" + params);
-    
+
     const clients = data.clients.map(
       (c: any) => {
-        const client = Models.get<ClientModel>("client." + c.id, () => new ClientModel(c.id));      
+        const client = Models.get<ClientModel>("client." + c.id, () => new ClientModel(c.id));
         client.fromJson(c);
         return client;
       }
-    );   
+    );
 
     this.setModels(clients);
   }

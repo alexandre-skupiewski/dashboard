@@ -9,6 +9,11 @@
   cursor: pointer;
 }
 
+.item:focus{  
+  outline: 0;     
+  border: 1px solid #0078d4;
+}
+
 .item:hover,
 .item.selected {
   background-color: #1f1f1f;
@@ -28,11 +33,6 @@
   path {
     fill: #c3cacc;
   };
-}
-
-.item:focus{  
-  outline: 0;     
-  border: 1px solid #0078d4;
 }
 
 .item > .itemLabel {

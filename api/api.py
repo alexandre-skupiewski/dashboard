@@ -4,6 +4,7 @@ import os
 from helpers.db import Db
 
 import helpers.clients as clients
+import helpers.orders as orders
 
 app = FastAPI()
 db = Db()
@@ -45,3 +46,23 @@ async def createClient(request: Request):
 async def updateClient(id: int, request: Request):
     data = await request.json()
     return clients.update(db, id, data)  
+
+""" Orders """ 
+
+@app.get("/orders")
+async def searchOrders(request: Request):  
+    return orders.search(db, type=request.query_params.get("type", ""), page=int(request.query_params.get("page", 1)), pageSize=int(request.query_params.get("pageSize", 100))) 
+
+@app.get("/orders/{id}")
+async def getOrder(id: int):
+    return orders.get(db, id) 
+
+@app.put("/orders")
+async def createOrder(request: Request):
+    data = await request.json()
+    return orders.create(db, data)   
+
+@app.patch("/orders/{id}")
+async def updateOrder(id: int, request: Request):
+    data = await request.json()
+    return orders.update(db, id, data)  

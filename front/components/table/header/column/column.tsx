@@ -1,7 +1,7 @@
 "use client";
 
 import css from './column.module.css';
-import { Model } from "@/models/models";
+import { Model } from "@/helpers/models/models";
 
 export interface ColumnProps<M extends Model> {
   title: string;
@@ -9,7 +9,7 @@ export interface ColumnProps<M extends Model> {
   style: object;
 }
 
-export default function Column<M extends Model>({ title, accessor, style }: ColumnProps<M>) { 
+export default function Column<M extends Model>({ title, accessor, style }: ColumnProps<M>) {
   return (
     <div className={css.column} style={style}>{title}</div>
   );

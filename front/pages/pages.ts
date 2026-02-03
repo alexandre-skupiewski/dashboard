@@ -1,16 +1,20 @@
+import { Menu } from "@/app/body/menu/menu"
+
 export class Page {
   public id: string;
   public title: React.ReactNode;
   public component?: React.ReactNode;
   public icon?: any;
   public selected: boolean
+  public menuId?: string
 
-  constructor(component: React.ReactNode, id: string, title: React.ReactNode, icon?: any) {
+  constructor(component: React.ReactNode, id: string, title: React.ReactNode, icon?: any, menuId="") {
     this.id = id;
     this.title = title;
     this.component = component;
     this.icon = icon;
     this.selected = false;
+    this.menuId = menuId;
   }
 }
 
@@ -32,22 +36,30 @@ export class Pages {
       selected: p.id === page.id
     }));
 
+    if(page.menuId && page.menuId != "")
+      Menu.select(page.menuId);
+
     this.openEvents.forEach(cb => cb(page));
   }
 
   static close(page: Page) {
-    const exists = this.pages.some(p => p.id === page.id);
-    if (!exists) return;
-
     // Retire la page
-    this.pages = this.pages.filter(p => p.id !== page.id);    
+    this.pages = this.pages.filter(p => p.id !== page.id);  
+    
+    const selectedIndex = this.pages.length - 1;
+    const selectedPage = this.pages[selectedIndex];
 
-    // Optionnel : sélectionner une autre page (ex : la dernière)
-    if (this.pages.length > 0) {
-      this.pages = this.pages.map((p, index) => ({
-        ...p,
-        selected: index === this.pages.length - 1,
-      }));
+    // Applique la sélection
+    this.pages = this.pages.map((p, index) => ({
+      ...p,
+      selected: index === selectedIndex
+    }));
+
+    // Synchronise le menu
+    if (selectedPage?.menuId) {
+      Menu.select(selectedPage.menuId);
+    } else {
+      Menu.select("");
     }
 
     // Notifie les abonnés

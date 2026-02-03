@@ -2,34 +2,39 @@
 
 import css from './row.module.css';
 import Column from "./column/column";
-import { Model } from "@/models/models";
+import { Model } from "@/helpers/models/models";
+import { ColumnProps } from "../../table";
 
-export interface ColumnProps<M extends Model> {
-  title: string;
-  accessor: keyof M;
-  style: object
-}
-
-interface RowProps<M extends Model> {  
+interface RowProps<M extends Model> {
   columns: ColumnProps<M>[];
-  model: Model;
+  model: M;
   onRowSelected?: (model: M) => void;
 }
 
-export default function Row<M extends Model>({ columns, model, onRowSelected}: RowProps<M>) {
-  return (    
-    <div 
+export default function Row<M extends Model>({ columns, model, onRowSelected }: RowProps<M>) {
+  return (
+    <div
       className={css.row}
       onDoubleClick={() => onRowSelected?.(model)}
-    >  
-      {columns.map((col) => (
-        <Column<M> 
-          content={String(model.get(col.accessor as string))} 
-          accessor={col.accessor} 
-          style={col.style} 
-          key={col.accessor as string} />       
-      ))}
-    </div>  
+    >      
+      {columns.map((col) => {
+        const CellComponent = col.component;
+
+        return (
+          <Column<M>
+            key={String(col.accessor)}
+            style={col.style}
+            content={String(model.get(col.accessor))}
+          >
+            {CellComponent ? (
+              <CellComponent model={model} />
+            ) : (
+              String(model.get(col.accessor))
+            )}
+          </Column>
+        );
+      })}
+    </div>
   );
 }
 
