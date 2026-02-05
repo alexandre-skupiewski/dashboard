@@ -17,12 +17,11 @@ interface Props {
 export default function Client({ client }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [model, setModel] = useModel<ClientModel>(client);
-
+ 
   useEffect(() => {
     const load = async () => {
       try {
-        await model.fetch();
+        await client?.fetch();
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -58,8 +57,8 @@ export default function Client({ client }: Props) {
 
   const items: Tab[] = [
     selectedTab,
-    new Tab(Orders, "offers", "Offres"),
-    new Tab(Orders, "orders", "Commandes")
+    new Tab(() => <Orders type={"offer"} client={client}/>, "offers", "Offres"),
+    new Tab(() => <Orders type={"order"} client={client}/>, "orders", "Commandes")
   ];
 
   return (

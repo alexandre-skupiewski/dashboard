@@ -6,15 +6,17 @@ import Row from "./row/row";
 import { Model, Collection } from "@/helpers/models/models";
 import Loader from "@/components/loaders/loader2"
 import CircleExclamationSvg from "@/components/svgs/circleExclamation"
-import { ColumnProps } from "../table";
+import { Column } from "../table";
+import { useCollection } from "@/helpers/models/models";
 
 interface Props<M extends Model> {
-  columns: ColumnProps<M>[];
+  columns: Column<M>[];
   collection?: Collection<M>;
   onRowSelected?: (model: M) => void;
 }
 
 export default function Body<M extends Model>({ columns, collection, onRowSelected }: Props<M>) {
+  const [models] = useCollection<Collection<M>, M>(collection || new Collection());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +53,7 @@ export default function Body<M extends Model>({ columns, collection, onRowSelect
 
   return (
     <div className={css.body}>
-      {collection?.getModels().map((model, i) => (
+      {models.map((model, i) => (
         <Row<M> columns={columns} model={model} onRowSelected={onRowSelected} key={String(i)} />
       ))}
     </div>

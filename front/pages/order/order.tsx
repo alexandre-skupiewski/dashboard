@@ -15,12 +15,12 @@ interface Props {
 export default function Client({ order }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [model, setModel] = useModel<OrderModel>(order);
+  const [model] = useModel<OrderModel>(order);
 
   useEffect(() => {
     const load = async () => {
       try {
-        await model.fetch();
+        await model?.fetch();
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -51,8 +51,6 @@ export default function Client({ order }: Props) {
       </div>
     );
   }
-
-  const selectedTab = new Tab(() => <OrderInfos order={order} />, "client", "Client", true);
 
   return (
     <div className={css.order}>

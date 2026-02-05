@@ -3,26 +3,27 @@ import Model from "@/helpers/models/model";
 import { Models } from "./models";
 
 export default function useModel<M extends Model>(
-  initialModel: M,
-): [M, (model: M) => void] {
-  const [model, setModel] = useState<M>(initialModel);
+  initialModel: M | null,
+): [M | null] {
+  const [model, setModel] = useState<M | null>(initialModel);
 
-  /* function commit() {
-     initialModel.copy(model);
-   }*/
+  function update() {    
+    setModel(model ? model.clone() : null);
+  }
 
-  useEffect(() => {
-
-    console.log("useModel mounted", model);
-
-    if (model.getId())
+  useEffect(() => {   
+    if (model && model.getId())
       Models.use(model.getKey());
 
-    return () => {
-      console.log("useModel unmounted", model);
-      Models.release(model.getKey());
+    const unbindUpdate = model?.bindUpdate(update);
+
+    return () => {   
+      if(model) {
+        Models.release(model.getKey());
+        unbindUpdate?.();
+      } 
     };
   }, []);
 
-  return [model, setModel];
+  return [model];
 }

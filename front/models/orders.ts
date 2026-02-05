@@ -10,6 +10,7 @@ export class OrderModel extends Model {
   id: number | null;
   laboruId: string;  
   number: string;
+  name: string;
   archived: boolean;
   createdAt: string;
   archivedAt: string;
@@ -22,6 +23,7 @@ export class OrderModel extends Model {
     this.id = id ? id : null;
     this.laboruId = "";   
     this.number = "";
+    this.name = "";
     this.archived = false;
     this.archivedAt = "";
     this.createdAt = "";
@@ -33,13 +35,14 @@ export class OrderModel extends Model {
     this.id = json.id;
     this.laboruId = json.laboruId;  
     this.number = json.number;
+    this.name = json.name;
     this.archived = json.archived;
     this.createdAt = json.createdAt;
     this.archivedAt = json.archivedAt;
     this.updatedAt = json.updatedAt;
 
     if(json.client) {
-      this.client = Models.get<ClientModel>("client." + this.id, () => new ClientModel());
+      this.client = Models.get<ClientModel>("client." + json.client.id, () => new ClientModel());
       this.client.copy(json.client);
     }    
   }
@@ -47,21 +50,34 @@ export class OrderModel extends Model {
 
 export class OrderCollection extends Collection<OrderModel> {
   static url: string = "orders";
-  type: string = "";
+  type: string;
+  clientId: number | null;  
 
-  constructor(type: string) {
+  constructor(type: string, clientId?: number | null) {
     super();
-    this.type = type;
+    this.type = type || "";
+    this.clientId = clientId || null;
   }
 
-  async fetch(page?: number, pageSize?: number): Promise<void> {
+  async fetch(page?: number, pageSize?: number, searchQuery?: string): Promise<void> {
+    this.page = page ?? this.page;
+    this.pageSize = pageSize ?? this.pageSize;
+    this.searchQuery = searchQuery ?? this.searchQuery;
+    
     const params = new URLSearchParams({
-      type: this.type,
-      page: page ? page.toString() : "1",
-      pageSize: pageSize ? pageSize.toString() : "100",
+      type: this.type,     
+      page: this.page ? this.page.toString() : "1",
+      pageSize: this.pageSize ? this.pageSize.toString() : "100",
+      searchQuery: this.searchQuery
     });
 
+    if(this.clientId)
+      params.append("clientId", this.clientId ? this.clientId.toString() : "");
+
     const data = await Api.GET("orders?" + params);
+
+    this.pageCount = data.pageCount;
+    this.total = data.total;
 
     const orders = data.orders.map(
       (o: any) => {
@@ -71,6 +87,9 @@ export class OrderCollection extends Collection<OrderModel> {
       }
     );
 
+    this.models.forEach(m => Models.release(m.getKey()));
     this.setModels(orders);
+
+    await super.fetch();
   }
 }

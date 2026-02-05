@@ -3,12 +3,12 @@ import { Menu } from "@/app/body/menu/menu"
 export class Page {
   public id: string;
   public title: React.ReactNode;
-  public component?: React.ReactNode;
+  public component?: React.FC;
   public icon?: any;
   public selected: boolean
   public menuId?: string
 
-  constructor(component: React.ReactNode, id: string, title: React.ReactNode, icon?: any, menuId="") {
+  constructor(component: React.FC, id: string, title: React.ReactNode, icon?: any, menuId="") {
     this.id = id;
     this.title = title;
     this.component = component;

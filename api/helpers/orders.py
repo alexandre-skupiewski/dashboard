@@ -5,42 +5,73 @@ import time
 import math
 from typing import Optional
 
-def search(db: Db, type: str, page: int = 1, pageSize: int = 100):
+def search(
+    db: Db,
+    type: str,
+    page: int = 1,
+    pageSize: int = 100,
+    clientId: int | None = None,
+    searchQuery: str = ""
+):
     offset = (page - 1) * pageSize
 
+    where_clauses = ["o.type = %s"]
+    params = [type]
+
+    if clientId is not None:
+        where_clauses.append("c.id = %s")
+        params.append(clientId)
+
+    if searchQuery:
+        where_clauses.append("(o.name LIKE %s OR o.number LIKE %s)")
+        params.append(f"%{searchQuery}%")
+        params.append(f"%{searchQuery}%")
+
+    where_sql = " AND ".join(where_clauses)
+
     # -------- COUNT --------
-    count_query = """
+    query = f"""
         SELECT COUNT(*) AS total
-        FROM orders
-        WHERE type = %s
+        FROM orders o
+        LEFT JOIN clients c ON c.id = o.clientId        
     """
-    res = db.execute(count_query, (type,))
+
+    if where_sql:
+        query += f"\nWHERE {where_sql}"
+
+    res = db.execute(query, tuple(params))
     row = next(iter(res), None)
     total = row["total"] if row else 0
     pageCount = math.ceil(total / pageSize) if pageSize > 0 else 0
 
     # -------- DATA --------
-    data_query = """
+    query = f"""
         SELECT
             o.id,
             o.laboruId,
             o.number,
+            o.name,
             o.createdAt,
             o.updatedAt,
             o.archived,
             o.archivedAt,
-
             c.id   AS clientId,
             c.name AS clientName,
             c.description AS clientDescription
-        FROM orders o
-        LEFT JOIN clients c ON c.id = o.clientId
-        WHERE o.type = %s
+        FROM orders o     
+        LEFT JOIN clients c ON c.id = o.clientId      
+    """
+
+    if where_sql:
+        query += f"WHERE {where_sql}"
+
+    query += """            
         ORDER BY o.id ASC
         LIMIT %s OFFSET %s
     """
 
-    rows = db.execute(data_query, (type, pageSize, offset))
+    params = params + [pageSize, offset]
+    rows = db.execute(query, tuple(params))
 
     orders = []
     for row in rows:
@@ -48,6 +79,7 @@ def search(db: Db, type: str, page: int = 1, pageSize: int = 100):
             "id": row["id"],
             "laboruId": row["laboruId"],
             "number": row["number"],
+            "name": row["name"],
             "createdAt": row["createdAt"].isoformat() if row["createdAt"] else None,
             "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None,
             "archived": bool(row["archived"]),

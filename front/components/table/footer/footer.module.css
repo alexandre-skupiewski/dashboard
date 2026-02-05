@@ -1,0 +1,20 @@
+.footer {  
+  display: flex;
+  border-top: 2px solid #2b2b2b;
+  padding: 3px 3px;
+  column-gap: 15px;  
+}
+
+.search {  
+  display: flex;
+  flex-basis: 20%;
+}
+
+.pages {  
+  display: flex;
+  flex-grow: 1;
+}
+
+.infos {  
+  display: flex;
+}

@@ -11,7 +11,7 @@ import CubesSvg from '@/components/svgs/cubes';
 import Home from '@/pages/home/home'
 import Clients from '@/pages/clients/clients'
 import Orders from '@/pages/orders/orders'
-import { Pages, Page } from '@/pages/pages'
+import { Pages, Page } from '@/helpers/pages'
 
 export class Menu {
   private static selectEvents: Array<(id: string) => void> = [];
@@ -34,35 +34,35 @@ export const Items = [
     label: "Accueil",
     path: "/",
     icon: HomeSvg,
-    page: <Home/>
+    page: <Home />
   }, {
     id: "clients",
     label: "Clients",
     path: "/clients",
     icon: ClientsSvg,
-    page: <Clients/>
+    page: <Clients />
   }, {
     id: "products",
     label: "Produits",
     path: "/products",
     icon: CubesSvg,
-    page: <Clients/>
+    page: <Clients />
   }, {
     id: "offers",
     label: "Offres",
     path: "/offers",
     icon: FileInvoiceSvg,
-    page: <Orders type={"offer"}/>
+    page: <Orders type={"offer"} />
   }, {
     id: "orders",
     label: "Commandes",
     path: "/orders",
     icon: FileInvoiceDollarSvg,
-    page: <Orders type={"order"}/>
-  } 
+    page: <Orders type={"order"} />
+  }
 ]
 
-interface Props {  
+interface Props {
 }
 
 export default function MenuView({ }: Props) {
@@ -79,17 +79,17 @@ export default function MenuView({ }: Props) {
   return (
     <nav className={css.menu}>
       {Items.map((item) => (
-        <Item 
-          key={item.id} 
-          item={item} 
+        <Item
+          key={item.id}
+          item={item}
           selected={selectedId == item.id}
           onItemSelected={() => {
             Menu.select(item.id)
 
-            const page = new Page(item.page, item.id, item.label, item.icon, item.id); 
+            const page = new Page(() => item.page, item.id, item.label, item.icon, item.id);
             Pages.open(page)
           }
-        }/>
+          } />
       ))}
     </nav>
   );

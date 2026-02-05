@@ -1,7 +1,6 @@
 .client {
   display: flex;  
   flex-grow: 1;
-  padding: 0px 15px;
 }
 
 .loading {

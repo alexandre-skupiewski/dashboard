@@ -23,7 +23,7 @@ export class Models {
       existing.refCount++
     }
 
-    console.log(`Models count: ${this.models.size}`)
+    //console.log(`Models count: ${this.models.size}`)
   }
 
   static get<M extends Model>(
@@ -34,13 +34,16 @@ export class Models {
 
     if (existing) {
       existing.refCount++
-      console.log(`Models count: ${this.models.size}`)
+      //console.log(`Models count: ${this.models.size}`)
+      //console.log("[MODELS] Return existing model: " + existing.model.uniqId);
       return existing.model
     }
 
-    const model = loader()
+    const model = loader();
+    //console.log("[MODELS] Return new model: " + model.uniqId);
+
     this.models.set(key, { model, refCount: 1 })
-    console.log(`Models count: ${this.models.size}`)
+    //console.log(`Models count: ${this.models.size}`)
     return model
   }
 
@@ -56,7 +59,7 @@ export class Models {
       this.models.delete(key)
     }
 
-    console.log(`Models count: ${this.models.size}`)
+    //console.log(`Models count: ${this.models.size}`)
   }
 
   private static disposeModel(model: any) {

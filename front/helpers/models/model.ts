@@ -4,6 +4,12 @@ export default class Model {
     protected static url: string;
     protected static key: string = "";
     protected static attributeId: string = "";
+    public uniqId: string = "";
+    private updateEvents: Array<() => void> = [];
+
+    constructor() {
+        this.uniqId = crypto.randomUUID();
+    }    
 
     getKey(): string {
         const ctor = this.constructor as typeof Model;
@@ -19,14 +25,32 @@ export default class Model {
         return (this as any)[attr];
     }
 
+    set(attr: string, value: any): any {
+        (this as any)[attr] = value;
+
+        if (this.updateEvents)
+            this.updateEvents.forEach(cb => cb());
+    }
+
     copy(model: this): this {
         Object.keys(model).forEach(key => {
             if (key in this) {
                 (this as any)[key] = (model as any)[key];
             }
         });
+
+        if (this.updateEvents)
+            this.updateEvents.forEach(cb => cb());
+        
         return this;
     } 
+
+    clone(): this {
+        return Object.assign(
+            Object.create(Object.getPrototypeOf(this)),
+            this
+        );
+    }
 
     async fetch(): Promise<void> {
         const ctor = this.constructor as typeof Model & { url: string };
@@ -127,5 +151,16 @@ export default class Model {
             const data = await Api.PUT(`${ctor.url}`, this.toJson());
             this.fromJson(data);
         }        
+    }
+
+    bindUpdate(callback: () => void) {
+        if (!this.updateEvents.includes(callback)) 
+            this.updateEvents.push(callback);
+
+        return () => this.unbindUpdate(callback);
+    }
+
+    unbindUpdate(callback: () => void) {
+        this.updateEvents = this.updateEvents.filter(cb => cb !== callback);
     }
 }

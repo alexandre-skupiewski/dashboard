@@ -48,10 +48,15 @@ export class ClientModel extends Model {
 export class ClientCollection extends Collection<ClientModel> {
   static url: string = "clients";
 
-  async fetch(page?: number, pageSize?: number): Promise<void> {
+  async fetch(page?: number, pageSize?: number, searchQuery?: string): Promise<void> {
+    this.page = page ?? this.page;
+    this.pageSize = pageSize ?? this.pageSize;
+    this.searchQuery = searchQuery ?? this.searchQuery;
+
     const params = new URLSearchParams({
-      page: page ? page.toString() : "1",
-      pageSize: pageSize ? pageSize.toString() : "100",
+      page: this.page ? this.page.toString() : "1",
+      pageSize: this.pageSize ? this.pageSize.toString() : "100",
+      searchQuery: this.searchQuery
     });
 
     const data = await Api.GET("clients?" + params);
@@ -64,6 +69,9 @@ export class ClientCollection extends Collection<ClientModel> {
       }
     );
 
+    this.models.forEach(m => Models.release(m.getKey()));
     this.setModels(clients);
+
+    await super.fetch();
   }
 }

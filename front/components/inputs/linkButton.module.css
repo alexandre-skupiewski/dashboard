@@ -2,7 +2,7 @@
   display: flex;  
   align-items: center;
   cursor: pointer;
-  padding: 2px 6px;
+  color: #489ae2;
 }
 
 .linkButton:hover {

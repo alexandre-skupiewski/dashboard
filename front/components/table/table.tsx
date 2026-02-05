@@ -7,15 +7,15 @@ import Body from "./body/body";
 import Footer from "./footer/footer";
 import { Model, Collection } from "@/helpers/models/models";
 
-export interface ColumnProps<M extends Model> {
+export interface Column<M extends Model> {
   title: string;
   accessor: string;
   style: CSSProperties,
-  component?: ComponentType<{ model: M }>;
+  component?: ComponentType<{ model: M; column: Column<M> }>;
 }
 
 interface TableProps<M extends Model> {
-  columns: ColumnProps<M>[];
+  columns: Column<M>[];
   onRowSelected?: (model: M) => void;
   collection?: Collection<M>;
 }
@@ -25,7 +25,7 @@ export default function Table<M extends Model>({ columns, onRowSelected, collect
     <div className={css.table}>
       <Header<M> columns={columns} />
       <Body<M> columns={columns} collection={collection} onRowSelected={onRowSelected} />
-      <Footer<M> />
+      <Footer<M> collection={collection}/>
     </div>
   );
 }

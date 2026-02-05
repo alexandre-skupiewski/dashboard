@@ -2,17 +2,34 @@ from helpers.db import Db
 import math
 import time
 
-def search(db: Db, page: int = 1, pageSize: int = 100):   
-    query = """
+def search(db: Db, page: int = 1, pageSize: int = 100, searchQuery: str = ""):  
+
+    offset = (page - 1) * pageSize
+
+    where_clauses = []
+    params = []
+
+    if searchQuery:
+        where_clauses.append("(c.name LIKE %s OR c.email LIKE %s)")
+        params.append(f"%{searchQuery}%")
+        params.append(f"%{searchQuery}%")
+
+    where_sql = " AND ".join(where_clauses)
+
+    query = f"""
         SELECT COUNT(*) AS total
-        FROM clients
+        FROM clients c        
     """
-    res = db.execute(query)
+
+    if where_sql:
+        query += f"\nWHERE {where_sql}"
+
+    res = db.execute(query, tuple(params))
     row = next(iter(res), None)
     total = row["total"] if row else 0
     pageCount = math.ceil(total / pageSize) if pageSize > 0 else 0
 
-    query = """
+    query = f"""
         SELECT
             id,
             laboruId,
@@ -23,11 +40,19 @@ def search(db: Db, page: int = 1, pageSize: int = 100):
             updatedAt,
             archived,
             archivedAt
-        FROM clients        
+        FROM clients c 
+    """
+
+    if where_sql:
+        query += f"WHERE {where_sql}"
+
+    query += """
+        ORDER BY c.id ASC
         LIMIT %s OFFSET %s
     """
 
-    rows = db.execute(query, (pageSize, (page - 1) * pageSize))
+    params = params + [pageSize, offset]
+    rows = db.execute(query, tuple(params))
 
     clients = []
     for row in rows:

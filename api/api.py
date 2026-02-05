@@ -31,7 +31,10 @@ async def check_token(request: Request, next):
 
 @app.get("/clients")
 async def searchClient(request: Request):  
-    return clients.search(db, page=int(request.query_params.get("page", 1)), pageSize=int(request.query_params.get("pageSize", 100))) 
+    return clients.search(db, 
+                          page=int(request.query_params.get("page", 1)), 
+                          pageSize=int(request.query_params.get("pageSize", 100)),
+                          searchQuery=request.query_params.get("searchQuery", "")) 
 
 @app.get("/clients/{id}")
 async def getClient(id: int):
@@ -51,7 +54,14 @@ async def updateClient(id: int, request: Request):
 
 @app.get("/orders")
 async def searchOrders(request: Request):  
-    return orders.search(db, type=request.query_params.get("type", ""), page=int(request.query_params.get("page", 1)), pageSize=int(request.query_params.get("pageSize", 100))) 
+    clientIdParam = request.query_params.get("clientId")
+    clientId = int(clientIdParam) if clientIdParam is not None else None
+    return orders.search(db, 
+                         type=request.query_params.get("type", ""), 
+                         clientId=clientId,
+                         page=int(request.query_params.get("page", 1)),
+                         pageSize=int(request.query_params.get("pageSize", 100)),
+                         searchQuery=request.query_params.get("searchQuery", ""))
 
 @app.get("/orders/{id}")
 async def getOrder(id: int):

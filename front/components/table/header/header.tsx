@@ -1,18 +1,19 @@
 "use client";
 
-import Column from "./column/column";
+import css from './header.module.css';
+import ColumnComp from "./column/column";
 import { Model } from "@/helpers/models/models";
-import { ColumnProps } from "../table";
+import { Column } from "../table";
 
 interface HeaderProps<M extends Model> {
-  columns: ColumnProps<M>[];
+  columns: Column<M>[];
 }
 
 export default function Header<M extends Model>({ columns }: HeaderProps<M>) {
   return (
-    <div style={style}>
+    <div className={css.header}>
       {columns.map((col) => (
-        <Column<M>
+        <ColumnComp<M>
           title={col.title}
           accessor={col.accessor}
           style={col.style}
@@ -20,11 +21,5 @@ export default function Header<M extends Model>({ columns }: HeaderProps<M>) {
       ))}
     </div>
   );
-}
-
-const style: React.CSSProperties = {
-  display: "flex",
-  borderBottom: "2px solid #2b2b2b",
-  padding: "3px 10px",
 }
 
