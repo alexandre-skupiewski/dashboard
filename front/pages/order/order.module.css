@@ -1,7 +1,7 @@
-.client {
+.order {
   display: flex;  
   flex-grow: 1;
-  padding: 0px 15px;
+  flex-direction: column;
 }
 
 .loading {
@@ -35,4 +35,83 @@
 
 .errorText {
   display: flex;   
+}
+
+.body {
+  display: flex; 
+  flex-grow: 1; 
+  padding: 15px 15px;  
+  column-gap: 15px;  
+  overflow: auto;
+}
+
+.infos {
+  display: flex;  
+  background-color: #252728;
+  flex-direction: column;
+  row-gap: 10px;   
+  padding: 15px 30px 15px 15px;
+  overflow: auto;
+}
+
+.infosItem {
+  display: flex;     
+  flex-wrap: wrap;
+  column-gap: 10px;
+  row-gap: 3px;  
+  align-items: center;
+}
+
+.infosItemLabel {
+  display: flex; 
+  color: #838585;
+  font-size: 12px;
+  line-height: 14px;
+
+}
+
+.infosItemLabel::after {
+  content: ":";
+  padding-left: 3px;
+}
+
+.infosItemValue {
+  display: flex; 
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.form {
+  display: flex; 
+  flex-grow: 1;
+  flex-direction: column;
+  row-gap: 15px; 
+  overflow: auto;
+}
+
+.form > *:last-child {
+  flex-grow: 1;
+}
+
+.flexColumn {
+  display: flex; 
+  flex-direction: column;
+  align-items: start;
+}
+
+.orderItems {
+  display: flex; 
+  flex-basis: 40%;
+  flex-direction: column;
+  row-gap: 15px; 
+}
+
+.orderItems > * {
+  flex-grow: 1;
+}
+
+.orderItemsSummary {
+  display: flex; 
+  flex-direction: column;
+  row-gap: 15px; 
 }

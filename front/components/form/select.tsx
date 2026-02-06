@@ -20,7 +20,7 @@ function Select({ title="", tabIndex=0, items = [], value = "", onChange, label}
       
       <SelectInput 
         key={"vatType"} 
-        title="Type de TVA" 
+        title={title}
         value={value}
         items={items}
         onChange={onChange}

@@ -8,7 +8,6 @@ import ClientInfos from "./client/client"
 import CircleExclamationSvg from "@/components/svgs/circleExclamation"
 import Loader from "@/components/loaders/loader2"
 import { ClientModel } from "@/models/clients";
-import { useModel } from "@/helpers/models/models";
 
 interface Props {
   client: ClientModel
@@ -21,7 +20,7 @@ export default function Client({ client }: Props) {
   useEffect(() => {
     const load = async () => {
       try {
-        await client?.fetch();
+        await client.fetch();
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);

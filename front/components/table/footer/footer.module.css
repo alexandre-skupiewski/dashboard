@@ -1,7 +1,7 @@
 .footer {  
   display: flex;
   border-top: 2px solid #2b2b2b;
-  padding: 3px 3px;
+  padding: 3px 15px 3px 3px;
   column-gap: 15px;  
 }
 
@@ -13,8 +13,16 @@
 .pages {  
   display: flex;
   flex-grow: 1;
+  justify-content: center;
 }
 
 .infos {  
   display: flex;
+  flex-basis: 20%;
+  justify-content: end;
+  align-items: center;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 600;
+  color: #838585;
 }

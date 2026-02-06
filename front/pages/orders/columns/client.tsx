@@ -2,7 +2,6 @@
 
 import { OrderModel } from "@/models/orders";
 import { ClientModel } from "@/models/clients";
-import { Model } from "@/helpers/models/models";
 import LinkButton from "@/components/inputs/linkButton";
 import { Pages, Page } from '@/helpers/pages'
 import Client from "@/pages/client/client";
@@ -20,11 +19,11 @@ export default function ClientComp({ model }: ColumnContent<OrderModel>) {
   const name = clientModel?.name ?? clientModel?.description;
 
   function click() {    
-    const page = new Page(() => <Client client={model.client!} />, "client." + model.client?.getId(), <div>Client | {model.client?.get("name")}</div>, UserSvg, "clients");
+    const page = new Page(() => <Client client={model.client} />, "client." + model.client?.getId(), `Client | ${model.client.name}`, UserSvg, "clients");
     Pages.open(page)
   }
 
   return (
-    <LinkButton onClick={click}>{name} {clientModel.id}</LinkButton>
+    <LinkButton onClick={click}>{name}</LinkButton>
   );
 }

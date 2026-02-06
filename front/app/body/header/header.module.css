@@ -1,4 +1,22 @@
 .header {
   display: flex; 
-  padding: 15px 20px;
+  padding: 10px 10px;  
+  column-gap: 15px;
+  align-items: center;
+}
+
+.icon {
+  display: flex; 
+  width: 30px;
+  height: 30px;
+  path {
+    fill: #838585;
+  }
+}
+
+.text {
+  display: flex; 
+  font-size: 12px;
+  font-weight: 600;
+  color: #838585;
 }

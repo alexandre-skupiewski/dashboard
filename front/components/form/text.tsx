@@ -18,7 +18,7 @@ function Text({ title="", tabIndex=0, placeholder, value, onChange, label}: Prop
         ) : (<></>)
       }      
       
-      <TextInput placeholder={placeholder} tabIndex={tabIndex} value={value} onChange={onChange} />           
+      <TextInput placeholder={placeholder} tabIndex={tabIndex} value={value} onChange={onChange} title={title}/>           
     </div>
   );
 }

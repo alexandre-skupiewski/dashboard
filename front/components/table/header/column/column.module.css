@@ -1,7 +1,8 @@
 .column {  
   display: flex; 
-  font-size: 14px;
-  line-height: 16px;
+  font-size: 12px; 
+  line-height: 13px;
+  color: #c3cacc;
   text-decoration: underline;
   padding: 8px 0px;
  

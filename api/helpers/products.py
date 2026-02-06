@@ -2,38 +2,22 @@ from helpers.db import Db
 import math
 import time
 
-import math
-from typing import Optional
+def search(db: Db, page: int = 1, pageSize: int = 100, searchQuery: str = ""):  
 
-def search(
-    db: Db,
-    type: str,
-    page: int = 1,
-    pageSize: int = 100,
-    clientId: int | None = None,
-    searchQuery: str = ""
-):
     offset = (page - 1) * pageSize
 
-    where_clauses = ["o.type = %s"]
-    params = [type]
-
-    if clientId is not None:
-        where_clauses.append("c.id = %s")
-        params.append(clientId)
+    where_clauses = []
+    params = []
 
     if searchQuery:
-        where_clauses.append("(o.name LIKE %s OR o.number LIKE %s)")
-        params.append(f"%{searchQuery}%")
+        where_clauses.append("(p.name LIKE %s)")
         params.append(f"%{searchQuery}%")
 
     where_sql = " AND ".join(where_clauses)
 
-    # -------- COUNT --------
     query = f"""
         SELECT COUNT(*) AS total
-        FROM orders o
-        LEFT JOIN clients c ON c.id = o.clientId        
+        FROM products p        
     """
 
     if where_sql:
@@ -44,78 +28,66 @@ def search(
     total = row["total"] if row else 0
     pageCount = math.ceil(total / pageSize) if pageSize > 0 else 0
 
-    # -------- DATA --------
     query = f"""
         SELECT
-            o.id,
-            o.laboruId,
-            o.number,
-            o.name,
-            o.createdAt,
-            o.updatedAt,
-            o.archived,
-            o.archivedAt,
-            c.id   AS clientId,
-            c.name AS clientName,
-            c.description AS clientDescription
-        FROM orders o     
-        LEFT JOIN clients c ON c.id = o.clientId      
+            id,
+            laboruId,
+            name,       
+            createdAt,
+            updatedAt,
+            archived,
+            archivedAt
+        FROM products p 
     """
 
     if where_sql:
         query += f"WHERE {where_sql}"
 
-    query += """            
-        ORDER BY o.id ASC
+    query += """
+        ORDER BY p.id ASC
         LIMIT %s OFFSET %s
     """
 
     params = params + [pageSize, offset]
     rows = db.execute(query, tuple(params))
 
-    orders = []
+    clients = []
     for row in rows:
-        orders.append({
+        clients.append({
             "id": row["id"],
             "laboruId": row["laboruId"],
-            "number": row["number"],
             "name": row["name"],
             "createdAt": row["createdAt"].isoformat() if row["createdAt"] else None,
             "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None,
             "archived": bool(row["archived"]),
             "archivedAt": row["archivedAt"].isoformat() if row["archivedAt"] else None,
-            "client": {
-                "id": row["clientId"],
-                "name": row["clientName"],
-                "description": row["clientDescription"],
-            } if row["clientId"] else None
         })
+
+    #time.sleep(5)
 
     return {
         "page": page,
         "pageSize": pageSize,
         "total": total,
         "pageCount": pageCount,
-        "items": orders
+        "items": clients
     }
 
-
-def get(db: Db, orderId: int):   
+def get(db: Db, client_id: int):   
     query = """
         SELECT
             id,
-            laboruId, 
-            number, 
-            name,               
+            laboruId,
+            name,                    
             createdAt,
             updatedAt,
             archived,
             archivedAt
-        FROM orders
+        FROM products
         WHERE id = %s
         LIMIT 1
     """
-    rows = db.execute(query, (orderId,))
+    rows = db.execute(query, (client_id,))
     row = next(iter(rows), None)
 
     if row is None:
@@ -126,7 +98,6 @@ def get(db: Db, orderId: int):
     return {
         "id": row["id"],
         "laboruId": row["laboruId"],
-        "number": row["number"], 
         "name": row["name"],       
         "createdAt": row["createdAt"].isoformat() if row["createdAt"] else None,
         "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None,
@@ -139,6 +110,11 @@ def create(db: Db, data: dict):
     placeholders = []
     values = []
 
+    if "name" in data:
+        columns.append("name")
+        placeholders.append("%s")
+        values.append(data["name"])
+
     if "archived" in data:
         columns.append("archived")
         placeholders.append("%s")
@@ -146,25 +122,30 @@ def create(db: Db, data: dict):
 
         columns.append("archivedAt")
         placeholders.append("NOW()" if data["archived"] else "NULL")
-    
+
+    # timestamps
     columns.extend(["createdAt", "updatedAt"])
     placeholders.extend(["NOW()", "NOW()"])
 
     query = f"""
-        INSERT INTO orders ({', '.join(columns)})
+        INSERT INTO products ({', '.join(columns)})
         VALUES ({', '.join(placeholders)})
     """
    
     cursor = db.execute(query, tuple(values))
-    orderId = cursor.lastrowid
+    clientId = cursor.lastrowid
     db.conn.commit()
     #time.sleep(5)
 
-    return get(db, orderId)
+    return get(db, clientId)
 
-def update(db: Db, orderId: int, data: dict):   
+def update(db: Db, client_id: int, data: dict):   
     fields = []
     values = []
+
+    if "name" in data:
+        fields.append("name = %s")
+        values.append(data["name"])
 
     if "archived" in data:
         fields.append("archived = %s")
@@ -178,17 +159,17 @@ def update(db: Db, orderId: int, data: dict):
     fields.append("updatedAt = NOW()")
 
     if not fields:
-        return get(db, orderId)
+        return get(db, client_id)
 
     query = f"""
-        UPDATE orders
+        UPDATE products
         SET {', '.join(fields)}
         WHERE id = %s
     """
-    values.append(orderId)
+    values.append(client_id)
     db.execute(query, tuple(values))
     db.conn.commit()
 
     #time.sleep(5)
 
-    return get(db, orderId)
+    return get(db, client_id)

@@ -7,7 +7,6 @@
 .label {
   display: flex;
   font-size: 12px; 
-  line-height: 12px;
+  line-height: 13px;
   color: #c3cacc;
-;
 }

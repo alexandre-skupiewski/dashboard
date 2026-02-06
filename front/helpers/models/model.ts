@@ -7,7 +7,7 @@ export default class Model {
     public uniqId: string = "";
     private updateEvents: Array<() => void> = [];
 
-    constructor() {
+    constructor() {       
         this.uniqId = crypto.randomUUID();
     }    
 
@@ -27,9 +27,6 @@ export default class Model {
 
     set(attr: string, value: any): any {
         (this as any)[attr] = value;
-
-        if (this.updateEvents)
-            this.updateEvents.forEach(cb => cb());
     }
 
     copy(model: this): this {
@@ -38,6 +35,12 @@ export default class Model {
                 (this as any)[key] = (model as any)[key];
             }
         });
+
+        return this;
+    } 
+
+    update(model: this): this {
+        this.copy(model);
 
         if (this.updateEvents)
             this.updateEvents.forEach(cb => cb());

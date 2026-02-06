@@ -75,7 +75,7 @@ def search(db: Db, page: int = 1, pageSize: int = 100, searchQuery: str = ""):
         "pageSize": pageSize,
         "total": total,
         "pageCount": pageCount,
-        "clients": clients
+        "items": clients
     }
 
 def get(db: Db, client_id: int):   

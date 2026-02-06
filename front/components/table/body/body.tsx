@@ -24,8 +24,12 @@ export default function Body<M extends Model>({ columns, collection, onRowSelect
     const load = async () => {
       try {
         await collection?.fetch(1, 100);        
-      } catch {
-        setError("Erreur lors du chargement");
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Erreur lors du chargement"
+        );
       } finally {
         setLoading(false);
       }

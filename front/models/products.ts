@@ -2,22 +2,13 @@ import { Model, Collection } from "../helpers/models/models";
 import Api from "@/helpers/api"
 import { Models } from "@/helpers/models/models";
 
-export class ClientModel extends Model {
-  protected static url: string = "clients";
-  protected static key: string = "client";
+export class ProductModel extends Model {
+  protected static url: string = "products";
+  protected static key: string = "product";
   protected static attributeId: string = "id";
   id: number | null;
   laboruId: string;
-  name: string;
-  description: string;
-  email: string;
-  vat: string;
-  vatType: string;
-  vatRate: string;
-  phone1: string;
-  phone2: string;
-  phone3: string;
-  phone4: string;
+  name: string; 
   archived: boolean;
   createdAt: string;
   archivedAt: string;
@@ -28,16 +19,7 @@ export class ClientModel extends Model {
     super();
     this.id = id ? id : null;
     this.laboruId = "";
-    this.name = "";
-    this.description = "";
-    this.email = "";
-    this.vat = "";
-    this.vatType = "";
-    this.vatRate = "";
-    this.phone1 = "";
-    this.phone2 = "";
-    this.phone3 = "";
-    this.phone4 = "";
+    this.name = "";   
     this.archived = false;
     this.archivedAt = "";
     this.createdAt = "";
@@ -45,8 +27,8 @@ export class ClientModel extends Model {
   }
 }
 
-export class ClientCollection extends Collection<ClientModel> {
-  static url: string = "clients";
+export class ProductCollection extends Collection<ProductModel> {
+  static url: string = "products";
 
   async fetch(page?: number, pageSize?: number, searchQuery?: string): Promise<void> {
     this.page = page ?? this.page;
@@ -59,14 +41,14 @@ export class ClientCollection extends Collection<ClientModel> {
       searchQuery: this.searchQuery
     });
 
-    const data = await Api.GET("clients?" + params);
+    const data = await Api.GET("products?" + params);
 
     this.pageCount = data.pageCount;
     this.total = data.total;
 
     const items = data.items.map(
       (c: any) => {
-        const item = Models.get<ClientModel>("client." + c.id, () => new ClientModel(c.id));
+        const item = Models.get<ProductModel>("product." + c.id, () => new ProductModel(c.id));
         item.fromJson(c);
         return item;
       }

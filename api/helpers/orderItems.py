@@ -7,33 +7,31 @@ from typing import Optional
 
 def search(
     db: Db,
-    type: str,
+    orderId: int,
     page: int = 1,
     pageSize: int = 100,
-    clientId: int | None = None,
     searchQuery: str = ""
 ):
     offset = (page - 1) * pageSize
 
-    where_clauses = ["o.type = %s"]
-    params = [type]
-
-    if clientId is not None:
-        where_clauses.append("c.id = %s")
-        params.append(clientId)
+    where_clauses = []
+    params = []
+    
+    if orderId is not None:
+        where_clauses.append("o.id = %s")
+        params.append(orderId)
 
     if searchQuery:
-        where_clauses.append("(o.name LIKE %s OR o.number LIKE %s)")
+        where_clauses.append("(oi.name LIKE %s)")
         params.append(f"%{searchQuery}%")
-        params.append(f"%{searchQuery}%")
-
+       
     where_sql = " AND ".join(where_clauses)
 
     # -------- COUNT --------
     query = f"""
         SELECT COUNT(*) AS total
-        FROM orders o
-        LEFT JOIN clients c ON c.id = o.clientId        
+        FROM orderItems oi
+        LEFT JOIN orders o ON o.id = oi.orderId        
     """
 
     if where_sql:
@@ -47,26 +45,21 @@ def search(
     # -------- DATA --------
     query = f"""
         SELECT
-            o.id,
-            o.laboruId,
-            o.number,
-            o.name,
-            o.createdAt,
-            o.updatedAt,
-            o.archived,
-            o.archivedAt,
-            c.id   AS clientId,
-            c.name AS clientName,
-            c.description AS clientDescription
-        FROM orders o     
-        LEFT JOIN clients c ON c.id = o.clientId      
+            oi.id, 
+            oi.name,           
+            oi.createdAt,
+            oi.updatedAt,            
+            o.id   AS orderId,
+            o.name AS orderName
+        FROM orderItems oi    
+        LEFT JOIN orders o ON o.id = oi.orderId      
     """
 
     if where_sql:
         query += f"WHERE {where_sql}"
 
     query += """            
-        ORDER BY o.id ASC
+        ORDER BY oi.id ASC
         LIMIT %s OFFSET %s
     """
 
@@ -76,19 +69,14 @@ def search(
     orders = []
     for row in rows:
         orders.append({
-            "id": row["id"],
-            "laboruId": row["laboruId"],
-            "number": row["number"],
-            "name": row["name"],
+            "id": row["id"], 
+            "name": row["name"],           
             "createdAt": row["createdAt"].isoformat() if row["createdAt"] else None,
-            "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None,
-            "archived": bool(row["archived"]),
-            "archivedAt": row["archivedAt"].isoformat() if row["archivedAt"] else None,
-            "client": {
-                "id": row["clientId"],
-                "name": row["clientName"],
-                "description": row["clientDescription"],
-            } if row["clientId"] else None
+            "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None,           
+            "order": {
+                "id": row["orderId"],
+                "name": row["orderName"]
+            } if row["orderId"] else None
         })
 
     return {
@@ -103,15 +91,11 @@ def search(
 def get(db: Db, orderId: int):   
     query = """
         SELECT
-            id,
-            laboruId, 
-            number, 
-            name,               
+            id,  
+            name,                  
             createdAt,
-            updatedAt,
-            archived,
-            archivedAt
-        FROM orders
+            updatedAt
+        FROM orderItems
         WHERE id = %s
         LIMIT 1
     """
@@ -124,14 +108,10 @@ def get(db: Db, orderId: int):
     #time.sleep(5)
 
     return {
-        "id": row["id"],
-        "laboruId": row["laboruId"],
-        "number": row["number"], 
+        "id": row["id"],        
         "name": row["name"],       
         "createdAt": row["createdAt"].isoformat() if row["createdAt"] else None,
-        "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None,
-        "archived": bool(row["archived"]),
-        "archivedAt": row["archivedAt"].isoformat() if row["archivedAt"] else None,
+        "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None        
     }
 
 def create(db: Db, data: dict):

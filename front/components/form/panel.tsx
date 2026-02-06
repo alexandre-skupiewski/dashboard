@@ -3,13 +3,14 @@
 import css from './panel.module.css';
 
 export interface Props {
-  children?: React.ReactNode
-  hover?: boolean
+  children?: React.ReactNode;
+  hover?: boolean;
+  style?: React.CSSProperties;
 }
 
-export default function Panel({children, hover = true} : Props) {
+export default function Panel({children, hover = true, style} : Props) {
   return (
-    <div className={`${css.panel} ${hover ? css.hover : null}`}>
+    <div className={`${css.panel} ${hover ? css.hover : null}`} style={style}>
       {children}
     </div>
   );

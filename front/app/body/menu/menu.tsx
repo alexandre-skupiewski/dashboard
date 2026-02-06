@@ -10,6 +10,7 @@ import FileInvoiceDollarSvg from '@/components/svgs/fileInvoiceDollar';
 import CubesSvg from '@/components/svgs/cubes';
 import Home from '@/pages/home/home'
 import Clients from '@/pages/clients/clients'
+import Products from '@/pages/products/products'
 import Orders from '@/pages/orders/orders'
 import { Pages, Page } from '@/helpers/pages'
 
@@ -46,7 +47,7 @@ export const Items = [
     label: "Produits",
     path: "/products",
     icon: CubesSvg,
-    page: <Clients />
+    page: <Products />
   }, {
     id: "offers",
     label: "Offres",

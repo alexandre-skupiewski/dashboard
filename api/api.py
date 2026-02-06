@@ -4,7 +4,9 @@ import os
 from helpers.db import Db
 
 import helpers.clients as clients
+import helpers.products as products
 import helpers.orders as orders
+import helpers.orderItems as orderItems
 
 app = FastAPI()
 db = Db()
@@ -50,6 +52,29 @@ async def updateClient(id: int, request: Request):
     data = await request.json()
     return clients.update(db, id, data)  
 
+""" Products """ 
+
+@app.get("/products")
+async def searchProduct(request: Request):  
+    return products.search(db, 
+                          page=int(request.query_params.get("page", 1)), 
+                          pageSize=int(request.query_params.get("pageSize", 100)),
+                          searchQuery=request.query_params.get("searchQuery", "")) 
+
+@app.get("/products/{id}")
+async def getProduct(id: int):
+    return products.get(db, id) 
+
+@app.put("/products")
+async def createProduct(request: Request):
+    data = await request.json()
+    return products.create(db, data)   
+
+@app.patch("/products/{id}")
+async def updateProduct(id: int, request: Request):
+    data = await request.json()
+    return products.update(db, id, data)  
+
 """ Orders """ 
 
 @app.get("/orders")
@@ -76,3 +101,27 @@ async def createOrder(request: Request):
 async def updateOrder(id: int, request: Request):
     data = await request.json()
     return orders.update(db, id, data)  
+
+""" OrderItems """ 
+
+@app.get("/order/items")
+async def searchOrderItems(request: Request):
+    return orderItems.search(db,                          
+                        orderId=int(request.query_params.get("orderId", None)),
+                        page=int(request.query_params.get("page", 1)),
+                        pageSize=int(request.query_params.get("pageSize", 100)),
+                        searchQuery=request.query_params.get("searchQuery", ""))
+
+@app.get("/order/items/{id}")
+async def getOrderItem(id: int):
+    return orderItems.get(db, id) 
+
+@app.put("/order/items")
+async def createOrderItem(request: Request):
+    data = await request.json()
+    return orderItems.create(db, data)   
+
+@app.patch("/order/items/{id}")
+async def updateOrderItem(id: int, request: Request):
+    data = await request.json()
+    return orderItems.update(db, id, data)  

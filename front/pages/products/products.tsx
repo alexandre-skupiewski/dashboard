@@ -2,30 +2,29 @@
 
 import Table from "@/components/table/table";
 import { Column } from "@/components/table/table";
-import UserSvg from "@/components/svgs/user"
+import CubeSvg from "@/components/svgs/cube"
 import { Pages, Page } from '@/helpers/pages'
-import Client from "@/pages/client/client";
-import { ClientModel, ClientCollection } from "@/models/clients";
+import Product from "@/pages/product/product";
+import { ProductModel, ProductCollection } from "@/models/products";
 import DateColumn from "@/components/table/columns/date";
 
-export default function Clients() {  
-  const columns: Column<ClientModel>[] = [     
+export default function Products() {  
+  const columns: Column<ProductModel>[] = [     
     { title: "Nom", accessor: "name", style: { flexGrow: 1 } },
-    { title: "Email", accessor: "email", style: { flexBasis: "300px" } },
     { title: "Création", accessor: "createdAt", style: { flexBasis: "100px" }, component: DateColumn },
     { title: "Modification", accessor: "updatedAt", style: { flexBasis: "100px" }, component: DateColumn }
   ];
 
-  const onRowSelected = (model: ClientModel) => {
-    const page = new Page(() => <Client client={model} />, "client." + model.getId(), `Client | ${model.name}`, UserSvg, "clients");
+  const onRowSelected = (model: ProductModel) => {
+    const page = new Page(() => <Product product={model} />, "client." + model.getId(), `Product | ${model.name}`, CubeSvg, "products");
     Pages.open(page)
   };
 
   return (
-    <Table<ClientModel>
+    <Table<ProductModel>
       columns={columns}
       onRowSelected={onRowSelected}
-      collection={new ClientCollection()}
+      collection={new ProductCollection()}
     />
   );
 }

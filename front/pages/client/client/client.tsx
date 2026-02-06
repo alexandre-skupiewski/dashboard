@@ -73,24 +73,22 @@ export default function Client({ client }: Props) {
     try {
       setLoadingText("Sauvegarde en cours...");
 
-      const clientToSave = new ClientModel().copy(client);
-      clientToSave.name = name;
-      clientToSave.description = description;
-      clientToSave.email = email;
-      clientToSave.archived = archived;
-      clientToSave.vat = vatNumber;
-      clientToSave.vatType = vatType;
-      clientToSave.vatRate = vatRate;
-      clientToSave.phone1 = phone1;
-      clientToSave.phone2 = phone2;
-      clientToSave.phone3 = phone3;
-      clientToSave.phone4 = phone4;
+      const copy = new ClientModel().copy(client);
+      copy.name = name;
+      copy.description = description;
+      copy.email = email;
+      copy.archived = archived;
+      copy.vat = vatNumber;
+      copy.vatType = vatType;
+      copy.vatRate = vatRate;
+      copy.phone1 = phone1;
+      copy.phone2 = phone2;
+      copy.phone3 = phone3;
+      copy.phone4 = phone4;
 
-      const id = clientToSave.id;
-
-      await clientToSave.save();
-       
-      client.copy(clientToSave);
+      const id = copy.id;
+      await copy.save();       
+      client.update(copy);
 
       if (id)
         Pages.updateTitle("client." + client.id, "Client | " + client.name);
@@ -112,7 +110,7 @@ export default function Client({ client }: Props) {
 
   async function add() {
     const newClient = new ClientModel();
-    const page = new Page(() => <Client client={newClient} />, "client.new", "Nouveau client", UserSvg);
+    const page = new Page(() => <Client client={newClient} />, "client.new", "Nouveau client", UserSvg, "clients");
     Pages.open(page)
   }
 

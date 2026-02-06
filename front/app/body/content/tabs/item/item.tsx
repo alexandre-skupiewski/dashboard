@@ -25,7 +25,8 @@ export default function Item({ page }: Props) {
       className={className}
       onClick={() => open(page)}
       onKeyDown={handleKeyDown}
-      tabIndex={page.selected ? -1 : 0}>
+      tabIndex={page.selected ? -1 : 0}
+      title={page.title}>
       <div className={css.itemIcon}>{page.icon && <page.icon />}</div>
       <div className={css.itemLabel}>{page.title}</div>
       <div className={css.itemClose} onClick={(e) => {

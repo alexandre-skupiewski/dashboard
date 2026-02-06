@@ -1,0 +1,50 @@
+.pages {  
+  display: flex;
+  align-items: center;
+  outline: none;   
+  border-radius: 3px; 
+}
+/*
+.pages:focus {
+  outline: 1px solid #0070f3;
+  outline-offset: -1px;
+}*/
+
+.item {  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #838585;
+  /*border: 1px solid white;  */
+  height: 28px;
+  padding: 0px 10px;
+}
+
+.item:hover,
+.item.active  {
+  color: #c3cacc;
+  text-decoration: underline;
+}
+
+.item .icon {
+  width: 18px;
+  height: 18px;
+  path {
+    fill: #838585;
+  }
+}
+
+.item:hover .icon {
+  path {
+    fill: #c3cacc;
+  }
+}
+
+.items {  
+  display: flex;
+  justify-content: center;
+}

@@ -1,13 +1,46 @@
-.client {
+.product {
   display: flex;  
   flex-grow: 1;
   flex-direction: column;
 }
 
+.loading {
+  display: flex; 
+  flex-direction: column;
+  row-gap: 100px;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.error {
+  display: flex; 
+  flex-direction: column;
+  row-gap: 50px;
+  flex-grow: 1;
+  font-size: 14px;
+  line-height: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorIcon {
+  display: flex;   
+  width: 150px;
+  height: 150px;
+  path {
+    fill: #181818;
+  }
+}
+
+.errorText {
+  display: flex;   
+}
+
 .body {
   display: flex; 
   flex-grow: 1; 
-  padding: 15px 0px;  
+  padding: 15px 15px;  
   column-gap: 15px;  
   overflow: auto;
 }

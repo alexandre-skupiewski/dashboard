@@ -23,6 +23,7 @@
   line-height: 18px;
   align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .errorIcon {
@@ -36,4 +37,5 @@
 
 .errorText {
   display: flex;   
+  text-align: center;
 }

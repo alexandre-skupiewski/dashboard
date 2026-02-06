@@ -33,6 +33,7 @@ sql = """
 INSERT INTO orderItems (
     orderId,
     productId,
+    name,
     amount,
     price,
     vat,   
@@ -40,7 +41,8 @@ INSERT INTO orderItems (
     updatedAt
 ) VALUES (
     %(orderId)s,   
-    %(productId)s,     
+    %(productId)s, 
+    %(name)s,     
     %(amount)s,
     %(price)s,
     %(vat)s,
@@ -62,6 +64,7 @@ for record in table:
         result = selectCursor.fetchone()
         productId = result[0] if result else None
     
+    """
     if not productId:
         selectCursor.execute("SELECT id FROM products WHERE name = %s", (record["ARTLIB"],))
         result = selectCursor.fetchone()
@@ -74,11 +77,16 @@ for record in table:
 
         insertCursor.execute(insertProductSql, data)
         productId = insertCursor.lastrowid
+    """
 
     if orderId:     
         ammount = 0
         if record["QTT"]:
             ammount = record["QTT"]
+
+        name = ""
+        if record["ARTLIB"]:
+            name = record["ARTLIB"]
         
         price = 0
         if record["DS2PXU"]:
@@ -90,7 +98,8 @@ for record in table:
         
         data = {                
             "orderId": orderId,
-            "productId": productId,     
+            "productId": productId, 
+            "name": name,    
             "amount": ammount,
             "price": price,
             "vat": vat

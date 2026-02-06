@@ -23,8 +23,7 @@ export default function Body({ children}: { children: React.ReactNode }) {
       <main>
         <Menu/>        
         <Content/>
-      </main>
-      <Footer/>  
+      </main>       
     </body>
   );
 }

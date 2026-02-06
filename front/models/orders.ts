@@ -15,7 +15,7 @@ export class OrderModel extends Model {
   createdAt: string;
   archivedAt: string;
   updatedAt: string;
-  client: ClientModel | null;
+  client: ClientModel;
 
   constructor(
     id?: number) {
@@ -28,7 +28,7 @@ export class OrderModel extends Model {
     this.archivedAt = "";
     this.createdAt = "";
     this.updatedAt = "";
-    this.client = null;
+    this.client = new ClientModel();
   }
 
   fromJson(json: any): void {
@@ -79,16 +79,16 @@ export class OrderCollection extends Collection<OrderModel> {
     this.pageCount = data.pageCount;
     this.total = data.total;
 
-    const orders = data.orders.map(
+    const items = data.items.map(
       (o: any) => {
-        const order = Models.get<OrderModel>("order." + o.id, () => new OrderModel(o.id));
-        order.fromJson(o);
-        return order;
+        const item = Models.get<OrderModel>("order." + o.id, () => new OrderModel(o.id));
+        item.fromJson(o);
+        return item;
       }
     );
 
     this.models.forEach(m => Models.release(m.getKey()));
-    this.setModels(orders);
+    this.setModels(items);
 
     await super.fetch();
   }
