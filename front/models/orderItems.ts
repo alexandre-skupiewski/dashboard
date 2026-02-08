@@ -44,6 +44,7 @@ export class OrderItemModel extends Model {
   toJson(): Record<string, any> {
     const json: Record<string, any> = {};
     json["id"] = this.id;
+    json["orderId"] = this.order?.id;
     json["name"] = this.name;
     json["price"] = this.price;
     json["amount"] = this.amount;

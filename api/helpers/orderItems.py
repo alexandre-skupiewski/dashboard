@@ -129,21 +129,18 @@ def get(db: Db, orderId: int):
 def create(db: Db, data: dict):
     columns = []
     placeholders = []
-    values = []
+    values = []       
 
-    if "archived" in data:
-        columns.append("archived")
+    if "orderId" in data:
+        columns.append("orderId")
         placeholders.append("%s")
-        values.append(data["archived"])
-
-        columns.append("archivedAt")
-        placeholders.append("NOW()" if data["archived"] else "NULL")
+        values.append(data["orderId"])
     
     columns.extend(["createdAt", "updatedAt"])
     placeholders.extend(["NOW()", "NOW()"])
 
     query = f"""
-        INSERT INTO orders ({', '.join(columns)})
+        INSERT INTO orderItems ({', '.join(columns)})
         VALUES ({', '.join(placeholders)})
     """
    
@@ -157,15 +154,6 @@ def create(db: Db, data: dict):
 def update(db: Db, orderId: int, data: dict):   
     fields = []
     values = []
-
-    """ if "archived" in data:
-        fields.append("archived = %s")
-        values.append(data["archived"])
-
-        if data["archived"]:
-            fields.append("archivedAt = NOW()")
-        else:
-            fields.append("archivedAt = NULL")"""
 
     fields.append("updatedAt = NOW()")
 

@@ -129,22 +129,6 @@ export default class Model {
         return changed;
     }
 
-    async create(): Promise<void> {    
-        const ctor = this.constructor as typeof Model & { url: string };
-
-        const res = await fetch(ctor.url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: this.toJson()
-        });
-
-        if (!res.ok) {
-            throw new Error(`Erreur lors de l'appel à l'API ("${res.url}) : ${res.status} : ${res.statusText}`);
-        }     
-    }
-
     async save(): Promise<void> {    
         const ctor = this.constructor as typeof Model & { url: string };
 

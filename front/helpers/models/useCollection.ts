@@ -13,7 +13,7 @@ export default function useCollection<C extends Collection<M>, M extends Model>(
   const [pageCount, setPageCount] = useState<number>(initialCollection?.pageCount || 0);
   
   function update() {        
-    setModels(initialCollection.getModels());
+    setModels([...initialCollection.getModels()]);
     setTotal(initialCollection.total);
     setPageCount(initialCollection.pageCount);
     setPage(initialCollection.page);

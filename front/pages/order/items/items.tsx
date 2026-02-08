@@ -30,7 +30,11 @@ export default function Items({ order } : Props) {
 
   function onAdd() {
     const newOrderItem = new OrderItemModel();
-    order.items.add(newOrderItem);
+    newOrderItem.order = order;
+    newOrderItem.save().then(() => {
+      order.items.add(newOrderItem);
+      //order.items.fetch();
+    });    
   }
 
   return (
