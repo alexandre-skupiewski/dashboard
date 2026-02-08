@@ -5,8 +5,8 @@ import css from './menu.module.css';
 import Item from './item/item';
 import HomeSvg from '@/components/svgs/home';
 import ClientsSvg from '@/components/svgs/users';
-import FileInvoiceSvg from '@/components/svgs/fileInvoice';
-import FileInvoiceDollarSvg from '@/components/svgs/fileInvoiceDollar';
+import MoneyCheckSvg from '@/components/svgs/moneyCheck';
+import MoneyCheckDollarSvg from '@/components/svgs/moneyCheckDollar';
 import CubesSvg from '@/components/svgs/cubes';
 import Home from '@/pages/home/home'
 import Clients from '@/pages/clients/clients'
@@ -52,13 +52,13 @@ export const Items = [
     id: "offers",
     label: "Offres",
     path: "/offers",
-    icon: FileInvoiceSvg,
+    icon: MoneyCheckSvg,
     page: <Orders type={"offer"} />
   }, {
     id: "orders",
     label: "Commandes",
     path: "/orders",
-    icon: FileInvoiceDollarSvg,
+    icon: MoneyCheckDollarSvg,
     page: <Orders type={"order"} />
   }
 ]

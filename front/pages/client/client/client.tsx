@@ -11,6 +11,7 @@ import Footer from "../footer/footer"
 import ErrorModal from "@/components/modals/error";
 import ConfirmModal from "@/components/modals/confirm";
 import { ClientModel } from "@/models/clients"
+import UseClient from "@/models/useClient"
 import UserSvg from "@/components/svgs/user"
 import { Pages, Page } from '@/helpers/pages'
 
@@ -18,118 +19,38 @@ interface Props {
   client: ClientModel
 }
 
-export default function Client({ client }: Props) {  
-  const [name, setName] = useState<string>(client.name);
-  const [description, setDescription] = useState<string>(client.description);
-  const [email, setEmail] = useState<string>(client.email);
-  const [vatNumber, setVatNumber] = useState<string>(client.vat);
-  const [vatType, setVatType] = useState<string>(client.vatType);
-  const [vatRate, setVatRate] = useState<string>(client.vatRate);
-  const [phone1, setPhone1] = useState<string>(client.phone1);
-  const [phone2, setPhone2] = useState<string>(client.phone2);
-  const [phone3, setPhone3] = useState<string>(client.phone3);
-  const [phone4, setPhone4] = useState<string>(client.phone4);
-  const [archived, setArchived] = useState<boolean>(client.archived);
+export default function Client({ client }: Props) {    
+  const [
+    [ id, laboruId, name, email, description, vatNumber, vatType, vatRate, phone1, phone2, phone3, phone4, archived, archivedAt, createdAt, updatedAt, isDirty ],
+    [
+      setName,
+      setEmail,
+      setDescription,
+      setVat,
+      setVatType,
+      setVatRate,
+      setPhone1,
+      setPhone2,
+      setPhone3,
+      setPhone4,
+      setArchived,
+      setIsDirty,
+      reset,
+      save,
+      refresh,
+      commit
+    ]
+  ] = UseClient(client);
+ 
   const [error, setError] = useState<string | null>(null);
   const [confirmation, setConfirmation] = useState<string | null>(null);
   const [loadingText, setLoadingText] = useState<string | null>(null);
-  const [isDirty, setIsDirty] = useState(false);
-
-  function refrech() {
-    setLoadingText("Rafraîchissement en cours...");
-    client.fetch().then(() => {
-      setLoadingText(null);
-      setName(client.name);
-      setDescription(client.description);
-      setEmail(client.email);
-      setVatNumber(client.vat);
-      setVatType(client.vatType);
-      setVatRate(client.vatRate);
-      setPhone1(client.phone1);
-      setPhone2(client.phone2);
-      setPhone3(client.phone3);
-      setPhone4(client.phone4);
-      setArchived(client.archived);
-      setIsDirty(false);
-    });
-  }
-
-  function reset() {
-    setName(client.name);
-    setDescription(client.description);
-    setEmail(client.email);
-    setVatNumber(client.vat);
-    setVatType(client.vatType);
-    setVatRate(client.vatRate);
-    setPhone1(client.phone1);
-    setPhone2(client.phone2);
-    setPhone3(client.phone3);
-    setPhone4(client.phone4);
-    setArchived(client.archived);
-    setIsDirty(false);
-  }
-
-  async function save() {
-    try {
-      setLoadingText("Sauvegarde en cours...");
-
-      const copy = new ClientModel().copy(client);
-      copy.name = name;
-      copy.description = description;
-      copy.email = email;
-      copy.archived = archived;
-      copy.vat = vatNumber;
-      copy.vatType = vatType;
-      copy.vatRate = vatRate;
-      copy.phone1 = phone1;
-      copy.phone2 = phone2;
-      copy.phone3 = phone3;
-      copy.phone4 = phone4;
-
-      const id = copy.id;
-      await copy.save();       
-      client.update(copy);
-
-      if (id)
-        Pages.updateTitle("client." + client.id, "Client | " + client.name);
-      else {
-        Pages.updateTitle("client.new", "Client | " + client.name);
-        Pages.updateId("client.new", "client." + client.id);
-      }
-
-      setLoadingText(null);
-
-      setError(null);
-      setIsDirty(false);
-    } catch (err: any) {
-      console.error(err);
-      setError(err?.message ?? "Erreur lors de la sauvegarde");
-      setLoadingText(null);
-    }
-  }
-
+  
   async function add() {
     const newClient = new ClientModel();
     const page = new Page(() => <Client client={newClient} />, "client.new", "Nouveau client", UserSvg, "clients");
     Pages.open(page)
   }
-
-  useEffect(() => {
-    const dirty =
-      name !== client.name ||
-      description !== client.description ||
-      email !== client.email ||
-      vatNumber !== client.vat ||
-      vatType !== client.vatType ||
-      vatRate !== client.vatRate ||
-      phone1 !== client.phone1 ||
-      phone2 !== client.phone2 ||
-      phone3 !== client.phone3 ||
-      phone4 !== client.phone4 ||
-      archived !== client.archived;
-
-    setIsDirty(dirty);
-  }, [name, description, vatNumber, vatType, vatRate, archived, phone1, phone2, phone3, phone4, client]);
 
   return (
     <div className={css.client}>
@@ -137,16 +58,16 @@ export default function Client({ client }: Props) {
         <Panel hover={false}>
           <div className={css.infosItem}>
             <div className={css.infosItemLabel}>ID</div>
-            <div className={css.infosItemValue}>{client.id}</div>
+            <div className={css.infosItemValue}>{id}</div>
           </div>
           <div className={css.infosItem}>
             <div className={css.infosItemLabel}>Laboru ID</div>
-            <div className={css.infosItemValue}>{client.laboruId}</div>
+            <div className={css.infosItemValue}>{laboruId}</div>
           </div>
           <div className={`${css.infosItem} ${css.flexColumn}`}>
             <div className={css.infosItemLabel}>Date de création</div>
             <div className={css.infosItemValue}>{
-              client.createdAt ? new Date(client.createdAt).toLocaleString('fr-FR', {
+              createdAt ? new Date(createdAt).toLocaleString('fr-FR', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -161,7 +82,7 @@ export default function Client({ client }: Props) {
           <div className={`${css.infosItem} ${css.flexColumn}`}>
             <div className={css.infosItemLabel}>Date de modification</div>
             <div className={css.infosItemValue}>{
-              client.updatedAt ? new Date(client.updatedAt).toLocaleString('fr-FR', {
+              updatedAt ? new Date(updatedAt).toLocaleString('fr-FR', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -174,11 +95,11 @@ export default function Client({ client }: Props) {
             </div>
           </div>
           {
-            client.archivedAt ? (
+            archivedAt ? (
               <div className={`${css.infosItem} ${css.flexColumn}`}>
                 <div className={css.infosItemLabel}>Date d'archivage</div>
                 <div className={css.infosItemValue}>{
-                  new Date(client.archivedAt).toLocaleString('fr-FR', {
+                  new Date(archivedAt).toLocaleString('fr-FR', {
                     year: 'numeric',
                     month: '2-digit',
                     day: '2-digit',
@@ -222,15 +143,6 @@ export default function Client({ client }: Props) {
                 setEmail(value);
               }}
             />
-
-            <Checkbox
-              key={"archived"}
-              title="Client archivé"
-              value={archived}
-              onChange={(value) => {
-                setArchived(value);
-              }}
-            >Archivé</Checkbox>
           </Panel>
           <Panel>
             <Text
@@ -281,7 +193,7 @@ export default function Client({ client }: Props) {
               label="Numéro de TVA"
               value={vatNumber}
               onChange={(value) => {
-                setVatNumber(value);
+                setVat(value);
               }}
             />
 
@@ -306,7 +218,7 @@ export default function Client({ client }: Props) {
               value={vatRate}
               label="Taux de TVA"
               items={[
-                new SelectItem("", "0%"),
+                new SelectItem("0%", "0%"),
                 new SelectItem("6%", "6%"),
                 new SelectItem("21%", "21%"),
                 new SelectItem("C", "C")
@@ -319,9 +231,37 @@ export default function Client({ client }: Props) {
         </div>
       </div>
       <Footer
-        onSave={save}
+        onSave={() => {
+          try {
+            setLoadingText("Sauvegarde en cours...");
+            save().then(() => {
+              setLoadingText(null);
+              setError(null);
+
+              //if (id)
+                Pages.updateTitle("product." + id, name);
+              //else {
+                //Pages.updateTitle("product.new", product.name);
+                //Pages.updateId("product.new", "product." + product.id);
+              //}
+            }); 
+          } catch (err: any) {          
+            setError(err?.message ?? "Erreur lors de la sauvegarde");
+            setLoadingText(null);
+          }
+        }}
         onReset={reset}
-        onRefresh={refrech}
+        onRefresh={() => {
+          setLoadingText("Rafraîchissement en cours...");
+          try {
+            refresh().then(() => {
+              setLoadingText(null);
+            });
+          } catch (err: any) {          
+            setError(err?.message ?? "Erreur lors de la recharge");
+            setLoadingText(null);
+          }
+        }}
         onAdd={add}
         loadingText={loadingText}
         canSave={isDirty}

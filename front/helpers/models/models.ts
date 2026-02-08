@@ -3,7 +3,6 @@ import Model from "@/helpers/models/model";
 
 export { default as Model } from "@/helpers/models/model";
 export { default as Collection } from "@/helpers/models/collection";
-export { default as useModel } from "@/helpers/models/useModel";
 export { default as useCollection } from "@/helpers/models/useCollection";
 
 type ModelEntry<T> = {
@@ -14,7 +13,7 @@ type ModelEntry<T> = {
 export class Models {
   private static models = new Map<string, ModelEntry<any>>()
 
-  static use(
+  /*static use(
     key: string
   ) {
     const existing = this.models.get(key)
@@ -24,27 +23,28 @@ export class Models {
     }
 
     //console.log(`Models count: ${this.models.size}`)
-  }
+  }*/
 
   static get<M extends Model>(
     key: string,
-    loader: () => M
-  ): M {
+    loader?: () => M
+  ): M | null {
     const existing = this.models.get(key)
 
     if (existing) {
       existing.refCount++
       //console.log(`Models count: ${this.models.size}`)
       //console.log("[MODELS] Return existing model: " + existing.model.uniqId);
-      return existing.model
+      return existing.model;
     }
-
-    const model = loader();
-    //console.log("[MODELS] Return new model: " + model.uniqId);
-
-    this.models.set(key, { model, refCount: 1 })
-    //console.log(`Models count: ${this.models.size}`)
-    return model
+     
+    if(loader && key && key != "") {
+      const model = loader();    
+      this.models.set(key, { model, refCount: 1 })
+      return model;
+    }   
+    
+    return null;
   }
 
   static release(key: string) {

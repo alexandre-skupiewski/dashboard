@@ -252,14 +252,14 @@ def update(db: Db, client_id: int, data: dict):
         fields.append("phone4 = %s")
         values.append(data["phone4"])
 
-    if "archived" in data:
+    """if "archived" in data:
         fields.append("archived = %s")
         values.append(data["archived"])
 
         if data["archived"]:
             fields.append("archivedAt = NOW()")
         else:
-            fields.append("archivedAt = NULL")
+            fields.append("archivedAt = NULL")"""
 
     fields.append("updatedAt = NOW()")
 

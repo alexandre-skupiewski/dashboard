@@ -5,13 +5,13 @@ import css from './order.module.css';
 import CircleExclamationSvg from "@/components/svgs/circleExclamation"
 import Loader from "@/components/loaders/loader2"
 import { OrderModel } from "@/models/orders";
-import { ClientModel } from "@/models/clients";
-import ClientPage from "@/pages/client/client";
-import { useModel } from "@/helpers/models/models";
-import Checkbox from "@/components/inputs/checkbox";
-import Text from "@/components/form/text"
+import UseOrder from "@/models/useOrder"
+import UseClient from "@/models/useClient"
+import FormText from "@/components/form/text"
+import FormDatetime from "@/components/form/datetime"
 import Panel from "@/components/form/panel";
-import LinkButton from "@/components/inputs/linkButton";
+import Infos from "./infos/infos"
+import Summary from "./summary/summary"
 import Footer from "./footer/footer"
 import ErrorModal from "@/components/modals/error";
 import ConfirmModal from "@/components/modals/confirm";
@@ -24,66 +24,25 @@ interface Props {
 }
 
 export default function Order({ order }: Props) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);  
-  const [archived, setArchived] = useState<boolean>(order.archived);  
-  const [confirmation, setConfirmation] = useState<string | null>(null);
-  const [loadingText, setLoadingText] = useState<string | null>(null);
-  const [isDirty, setIsDirty] = useState(false);
-  const [clientModel] = useModel<ClientModel>(order.client);
-  const [name, setName] = useState<string>(order.name);
+  const [
+      [, name,,,,,, dueAt,,,,, isDirty],
+      [
+        setName, 
+        setDueAt,    
+        setArchived,
+        reset,
+        save,
+        refresh,
+        commit
+      ]
+    ] = UseOrder(order);
 
-  const clientName = "";//clientModel?.name ?? clientModel?.description;
+  const [[,,,,,, vatRate, vatType ]] = UseClient(order.client!);
   
-  function openClient() {    
-    const page = new Page(() => <ClientPage client={order.client!} />, "client." + clientModel?.getId(), `Client | ${clientModel?.name}`, UserSvg, "clients");
-    Pages.open(page)
-  }
-
-  function refrech() {
-    setLoadingText("Rafraîchissement en cours...");
-    order.fetch().then(() => {
-      setLoadingText(null);
-      setName(order.name);  
-      setArchived(order.archived);
-      setIsDirty(false);
-    });
-  }
-
-  function reset() {
-    setName(order.name);  
-    setArchived(order.archived);
-    setIsDirty(false);
-  }
-
-  async function save() {
-    try {
-      setLoadingText("Sauvegarde en cours...");
-
-      const copy = new OrderModel().copy(order);
-      copy.archived = archived;
-
-      const id = copy.id;
-      await copy.save();
-      order.update(copy);
-
-      if (id)
-        Pages.updateTitle("order." + order.id, "Order | " + order.id);
-      else {
-        Pages.updateTitle("order.new", "Order | " + order.id);
-        Pages.updateId("order.new", "order." + order.id);
-      }
-
-      setLoadingText(null);
-
-      setError(null);
-      setIsDirty(false);
-    } catch (err: any) {
-      console.error(err);
-      setError(err?.message ?? "Erreur lors de la sauvegarde");
-      setLoadingText(null);
-    }
-  }
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);   
+  const [confirmation, setConfirmation] = useState<string | null>(null);
+  const [loadingText, setLoadingText] = useState<string | null>(null);  
 
   async function add() {
     const newOrder = new OrderModel();
@@ -94,7 +53,8 @@ export default function Order({ order }: Props) {
   useEffect(() => {
     const load = async () => {
       try {
-        await order.fetch();
+        await order.fetch();       
+        await order.client?.fetch();
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -109,12 +69,31 @@ export default function Order({ order }: Props) {
     load();
   }, []);
 
-  useEffect(() => {
-      const dirty =
-        archived !== order.archived;
-  
-      setIsDirty(dirty);
-    }, [archived, order]);
+  useEffect(() => {    
+    order.items.getModels().forEach((model) => {
+      if(order.client?.vatType === "") {
+        if(order.client?.vatRate === "0%")
+          model.vat = 0;
+        if(order.client?.vatRate === "6%")
+          model.vat = 6;
+        if(order.client?.vatRate === "21%")
+          model.vat = 21;
+        if(order.client?.vatRate === "C")
+          model.vat = 0;
+      } else {
+        model.vat = 0;
+      }
+      model.calc();
+      model.update();     
+
+      order.total += model.price;
+      order.vat += model.vatValue;
+      order.vatTotal += model.vatPrice;
+    });
+
+     order.calc();
+     order.update();    
+  }, [vatRate, vatType]);
 
   if (loading) {
     return (
@@ -136,103 +115,67 @@ export default function Order({ order }: Props) {
   return (
     <div className={css.order}>
       <div className={css.body}>
-        <Panel hover={false}>
-          <div className={css.infosItem}>
-            <div className={css.infosItemLabel}>ID</div>
-            <div className={css.infosItemValue}>{order.id}</div>
-          </div>
-          <div className={css.infosItem}>
-            <div className={css.infosItemLabel}>Laboru ID</div>
-            <div className={css.infosItemValue}>{order.laboruId}</div>
-          </div>
-          <div className={`${css.infosItem} ${css.flexColumn}`}>
-            <div className={css.infosItemLabel}>Client</div>
-            <div className={css.infosItemValue}>
-              <LinkButton onClick={openClient}>{clientName}</LinkButton>
-            </div>
-          </div>
-          <div className={`${css.infosItem} ${css.flexColumn}`}>
-            <div className={css.infosItemLabel}>Date de création</div>
-            <div className={css.infosItemValue}>{
-              order.createdAt ? new Date(order.createdAt).toLocaleString('fr-FR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-              })
-                : "Inconnue"
-            }
-            </div>
-          </div>
-          <div className={`${css.infosItem} ${css.flexColumn}`}>
-            <div className={css.infosItemLabel}>Date de modification</div>
-            <div className={css.infosItemValue}>{
-              order.updatedAt ? new Date(order.updatedAt).toLocaleString('fr-FR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-              })
-                : "Inconnue"
-            }
-            </div>
-          </div>
-          {
-            order.archivedAt ? (
-              <div className={`${css.infosItem} ${css.flexColumn}`}>
-                <div className={css.infosItemLabel}>Date d'archivage</div>
-                <div className={css.infosItemValue}>{
-                  new Date(order.archivedAt).toLocaleString('fr-FR', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                  })
-                }</div>
-              </div>
-            ) : null
-          }
-        </Panel>
-        <div className={css.form}>
-          <Panel>
-            <Text
-              key={"name"}
-              title="Nom de la commande"
-              label="Nom"
-              value={name}
-              onChange={(value) => {
-                setName(value);
-              }}
-            />                        
-            <Checkbox
-              key={"archived"}
-              title="Client archivé"
-              value={archived}
-              onChange={(value) => {
-                setArchived(value);
-              }}
-            >Archivé</Checkbox>
-          </Panel>         
+        <Infos order={order}/>
+        <div className={css.center}>
+          <div className={css.form}>
+            <Panel>
+              <FormText
+                key={"name"}
+                title="Nom de la commande"
+                label="Nom"
+                value={name}
+                onChange={(value) => {
+                  setName(value);
+                }}
+              />  
+              <FormDatetime
+                key={"dueAt"}
+                title="Date d'échéance"
+                label="Date d'échéance"
+                value={dueAt}
+                onChange={(value) => {
+                  setDueAt(value);
+                }}
+              />      
+            </Panel>         
+          </div>          
+          <OrderItems order={order}/>          
         </div>
-        <div className={css.orderItems}>
-          <Panel style={{ padding: 0, flexGrow: 1 }}>  
-            <OrderItems order={order}/>
-          </Panel>
-          <Panel style={{ flexBasis: "20%" }}>            
-            <div className={css.orderItemsSummary}></div>
-          </Panel>
-        </div>
+        <Summary order={order}/>
       </div>
       <Footer
-        onSave={save}
+        type={order.type}
+        onSave={() => {
+          try {
+            setLoadingText("Sauvegarde en cours...");
+            save().then(() => {
+              setLoadingText(null);
+              setError(null);
+
+              //if (id)
+                Pages.updateTitle("order." + order.id, `${name} > ${order.client?.name}`);
+              //else {
+                //Pages.updateTitle("product.new", product.name);
+                //Pages.updateId("product.new", "product." + product.id);
+              //}
+            }); 
+          } catch (err: any) {          
+            setError(err?.message ?? "Erreur lors de la sauvegarde");
+            setLoadingText(null);
+          }
+        }}
         onReset={reset}
-        onRefresh={refrech}
+        onRefresh={() => {
+          setLoadingText("Rafraîchissement en cours...");
+          try {
+            refresh().then(() => {
+              setLoadingText(null);
+            });
+          } catch (err: any) {          
+            setError(err?.message ?? "Erreur lors de la recharge");
+            setLoadingText(null);
+          }
+        }}
         onAdd={add}
         loadingText={loadingText}
         canSave={isDirty}

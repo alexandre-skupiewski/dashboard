@@ -67,7 +67,6 @@
   color: #838585;
   font-size: 12px;
   line-height: 14px;
-
 }
 
 .infosItemLabel::after {
@@ -78,6 +77,7 @@
 .infosItemValue {
   display: flex; 
   font-size: 12px;
+  font-weight: 600;
   line-height: 14px;
 }
 

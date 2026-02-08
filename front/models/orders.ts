@@ -2,49 +2,90 @@ import { Model, Collection } from "../helpers/models/models";
 import Api from "@/helpers/api"
 import { Models } from "@/helpers/models/models";
 import { ClientModel } from "@/models/clients"
+import { OrderItemModel, OrderItemCollection } from "@/models/orderItems";
 
 export class OrderModel extends Model {
   protected static url: string = "orders";
   protected static key: string = "order";
   protected static attributeId: string = "id";
   id: number | null;
-  laboruId: string;  
-  number: string;
-  name: string;
-  archived: boolean;
-  createdAt: string;
-  archivedAt: string;
-  updatedAt: string;
-  client: ClientModel;
+  type: "order" | "offer" = "order";
+  laboruId: string = "";  
+  number: string = "";
+  name: string = "";
+  total: number = 0;
+  vat: number = 0;
+  vatType: string = "";
+  vatRate: number = 0;
+  vatTotal: number = 0;
+  archived: boolean = false;
+  createdAt: string = "";
+  archivedAt: string = "";
+  updatedAt: string = "";
+  dueAt: string = "";
+  client: ClientModel | null;
+  items: OrderItemCollection;
 
-  constructor(
-    id?: number) {
+  constructor(id?: number | null) {
     super();
-    this.id = id ? id : null;
-    this.laboruId = "";   
-    this.number = "";
-    this.name = "";
-    this.archived = false;
-    this.archivedAt = "";
-    this.createdAt = "";
-    this.updatedAt = "";
+    this.id = id || null;   
     this.client = new ClientModel();
+    this.items = new OrderItemCollection(this.id);
   }
 
   fromJson(json: any): void {
     this.id = json.id;
+    this.type = json.type;  
     this.laboruId = json.laboruId;  
     this.number = json.number;
     this.name = json.name;
+    this.total = json.total;
+    this.vat = json.vat;
+    this.vatType = json.vatType;
+    this.vatRate = json.vatRate;
+    this.vatTotal = json.vatTotal;
     this.archived = json.archived;
     this.createdAt = json.createdAt;
     this.archivedAt = json.archivedAt;
     this.updatedAt = json.updatedAt;
+    this.dueAt = json.dueAt;
 
     if(json.client) {
       this.client = Models.get<ClientModel>("client." + json.client.id, () => new ClientModel());
-      this.client.copy(json.client);
+      this.client?.copy(json.client);
     }    
+  }
+
+  toJson(): Record<string, any> {
+    const json: Record<string, any> = {};
+    json["id"] = this.id;
+    json["type"] = this.type;
+    json["laboruId"] = this.laboruId;
+    json["number"] = this.number;
+    json["name"] = this.name;
+    json["total"] = this.total;
+    json["vat"] = this.vat;
+    json["vatType"] = this.vatType;
+    json["vatRate"] = this.vatRate;
+    json["vatTotal"] = this.vatTotal;
+    json["archived"] = this.archived;
+    json["createdAt"] = this.createdAt;
+    json["archivedAt"] = this.archivedAt;
+    json["updatedAt"] = this.updatedAt;
+    json["dueAt"] = this.dueAt;
+    return json;
+  }
+
+  calc() { 
+    this.total = 0;
+    this.vat = 0;
+    this.vatTotal = 0;
+    this.items.getModels().forEach((orderItem) => {
+      this.total += orderItem.totalPrice;
+      this.vat += orderItem.vatValue;
+      this.vatTotal += orderItem.vatPrice;
+    });  
+    this.update();  
   }
 }
 
@@ -82,7 +123,7 @@ export class OrderCollection extends Collection<OrderModel> {
     const items = data.items.map(
       (o: any) => {
         const item = Models.get<OrderModel>("order." + o.id, () => new OrderModel(o.id));
-        item.fromJson(o);
+        item?.fromJson(o);
         return item;
       }
     );

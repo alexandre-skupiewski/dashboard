@@ -147,14 +147,14 @@ def update(db: Db, client_id: int, data: dict):
         fields.append("name = %s")
         values.append(data["name"])
 
-    if "archived" in data:
+    """if "archived" in data:
         fields.append("archived = %s")
         values.append(data["archived"])
 
         if data["archived"]:
             fields.append("archivedAt = NOW()")
         else:
-            fields.append("archivedAt = NULL")
+            fields.append("archivedAt = NULL")"""
 
     fields.append("updatedAt = NOW()")
 

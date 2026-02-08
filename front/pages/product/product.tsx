@@ -5,11 +5,13 @@ import css from './product.module.css';
 import CircleExclamationSvg from "@/components/svgs/circleExclamation"
 import Loader from "@/components/loaders/loader2"
 import Text from "@/components/form/text"
+import Checkbox from "@/components/inputs/checkbox";
 import Panel from "@/components/form/panel";
 import Footer from "./footer/footer"
 import ErrorModal from "@/components/modals/error";
 import ConfirmModal from "@/components/modals/confirm";
 import { ProductModel } from "@/models/products"
+import UseProduct from "@/models/useProduct"
 import { Pages, Page } from '@/helpers/pages'
 import CubeSvg from "@/components/svgs/cube"
 
@@ -18,58 +20,23 @@ interface Props {
 }
 
 export default function Product({ product }: Props) {
+  const [
+    [ id, laboruId, name, archived, archivedAt, createdAt, updatedAt, isDirty],
+    [
+      setName,     
+      setArchived,
+      setIsDirty,
+      reset,
+      save,
+      refresh,
+      commit
+    ]
+  ] = UseProduct(product);
+
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState<string>(product.name); 
-  const [archived, setArchived] = useState<boolean>(product.archived); 
+  const [error, setError] = useState<string | null>(null); 
   const [confirmation, setConfirmation] = useState<string | null>(null);
-  const [loadingText, setLoadingText] = useState<string | null>(null);
-  const [isDirty, setIsDirty] = useState(false);
-
-  function refrech() {
-    setLoadingText("Rafraîchissement en cours...");
-    product.fetch().then(() => {
-      setLoadingText(null);
-      setName(product.name);     
-      setArchived(product.archived);
-      setIsDirty(false);
-    });
-  }
-
-  function reset() {
-    setName(product.name);  
-    setArchived(product.archived);
-    setIsDirty(false);
-  }
-
-  async function save() {
-    try {
-      setLoadingText("Sauvegarde en cours...");
-
-      const copy = new ProductModel().copy(product);
-      copy.name = name;    
-
-      const id = copy.id;
-      await copy.save();        
-      product.update(copy);
-
-      if (id)
-        Pages.updateTitle("product." + product.id, "Product | " + product.name);
-      else {
-        Pages.updateTitle("product.new", "Product | " + product.name);
-        Pages.updateId("product.new", "product." + product.id);
-      }
-
-      setLoadingText(null);
-
-      setError(null);
-      setIsDirty(false);
-    } catch (err: any) {
-      console.error(err);
-      setError(err?.message ?? "Erreur lors de la sauvegarde");
-      setLoadingText(null);
-    }
-  }
+  const [loadingText, setLoadingText] = useState<string | null>(null); 
 
   async function add() {
     const newProduct = new ProductModel();
@@ -95,14 +62,6 @@ export default function Product({ product }: Props) {
     load();
   }, []);
 
-  useEffect(() => {
-    const dirty =
-      name !== product.name ||
-      archived !== product.archived;
-
-    setIsDirty(dirty);
-  }, [name, archived, product]);
-
   if (loading) {
     return (
       <div className={css.loading}>
@@ -126,16 +85,16 @@ export default function Product({ product }: Props) {
         <Panel hover={false}>
           <div className={css.infosItem}>
             <div className={css.infosItemLabel}>ID</div>
-            <div className={css.infosItemValue}>{product.id}</div>
+            <div className={css.infosItemValue}>{id}</div>
           </div>
           <div className={css.infosItem}>
             <div className={css.infosItemLabel}>Laboru ID</div>
-            <div className={css.infosItemValue}>{product.laboruId}</div>
+            <div className={css.infosItemValue}>{laboruId}</div>
           </div>
           <div className={`${css.infosItem} ${css.flexColumn}`}>
             <div className={css.infosItemLabel}>Date de création</div>
             <div className={css.infosItemValue}>{
-              product.createdAt ? new Date(product.createdAt).toLocaleString('fr-FR', {
+              createdAt ? new Date(createdAt).toLocaleString('fr-FR', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -150,7 +109,7 @@ export default function Product({ product }: Props) {
           <div className={`${css.infosItem} ${css.flexColumn}`}>
             <div className={css.infosItemLabel}>Date de modification</div>
             <div className={css.infosItemValue}>{
-              product.updatedAt ? new Date(product.updatedAt).toLocaleString('fr-FR', {
+              updatedAt ? new Date(updatedAt).toLocaleString('fr-FR', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -163,11 +122,11 @@ export default function Product({ product }: Props) {
             </div>
           </div>
           {
-            product.archivedAt ? (
+            archivedAt ? (
               <div className={`${css.infosItem} ${css.flexColumn}`}>
                 <div className={css.infosItemLabel}>Date d'archivage</div>
                 <div className={css.infosItemValue}>{
-                  new Date(product.archivedAt).toLocaleString('fr-FR', {
+                  new Date(archivedAt).toLocaleString('fr-FR', {
                     year: 'numeric',
                     month: '2-digit',
                     day: '2-digit',
@@ -184,20 +143,56 @@ export default function Product({ product }: Props) {
           <Panel>
             <Text
               key={"name"}
-              title="Nom du client"
+              title="Nom du produit"
               label="Nom"
               value={name}
               onChange={(value) => {
                 setName(value);
               }}
             />
-          </Panel>
+            <Checkbox
+              key={"archived"}
+              title="Produit archivé"
+              value={archived}
+              onChange={(value) => {
+                setArchived(value);
+              }}
+            >Archivé</Checkbox>
+          </Panel>         
         </div>
       </div>
       <Footer
-        onSave={save}
+        onSave={() => {
+          try {
+            setLoadingText("Sauvegarde en cours...");
+            save().then(() => {
+              setLoadingText(null);
+              setError(null);
+
+              //if (id)
+                Pages.updateTitle("product." + id, name);
+              //else {
+                //Pages.updateTitle("product.new", product.name);
+                //Pages.updateId("product.new", "product." + product.id);
+              //}
+            }); 
+          } catch (err: any) {          
+            setError(err?.message ?? "Erreur lors de la sauvegarde");
+            setLoadingText(null);
+          }
+        }}
         onReset={reset}
-        onRefresh={refrech}
+        onRefresh={() => {
+          setLoadingText("Rafraîchissement en cours...");
+          try {
+            refresh().then(() => {
+              setLoadingText(null);
+            });
+          } catch (err: any) {          
+            setError(err?.message ?? "Erreur lors de la recharge");
+            setLoadingText(null);
+          }
+        }}
         onAdd={add}
         loadingText={loadingText}
         canSave={isDirty}

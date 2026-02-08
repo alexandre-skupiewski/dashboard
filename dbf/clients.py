@@ -54,6 +54,9 @@ INSERT INTO clients (
 
 for record in table:
     vat = f"{record.get('TIEREFTVA','')}{record.get('TIENUMTVA','')}".strip()
+    vatRate = "0%"
+    if record.get("TVCCLE__S") and record.get("TVCCLE__S") != "":
+        vatRate = record.get("TVCCLE__S")   
 
     data = {                
         "laboruId": record["TIECLE"],
@@ -62,7 +65,7 @@ for record in table:
         "email": record.get("WEBMEL"),
         "vat": vat or None,
         "vatType": record.get("TIEREGTVA"),
-        "vatRate": record.get("TVCCLE__S"),
+        "vatRate": vatRate,
         "phone1": record.get("TIENUMTE1"),
         "phone2": record.get("TIENUMTE2"),
         "phone3": record.get("TIENUMTE3"),

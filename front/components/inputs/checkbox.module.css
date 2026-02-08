@@ -44,6 +44,10 @@
   color: #c3cacc;
 }
 
+.checkbox:hover .label {  
+  text-decoration: underline;
+}
+
 .checkbox:focus .label {  
   text-decoration: underline;
 }

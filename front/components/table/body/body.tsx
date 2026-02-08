@@ -15,8 +15,8 @@ interface Props<M extends Model> {
   onRowSelected?: (model: M) => void;
 }
 
-export default function Body<M extends Model>({ columns, collection, onRowSelected }: Props<M>) {
-  const [models] = useCollection<Collection<M>, M>(collection || new Collection());
+export default function Body<M extends Model>({ columns, collection: ICol, onRowSelected }: Props<M>) {
+  const [collection, models] = useCollection<Collection<M>, M>(ICol || new Collection());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,10 +56,12 @@ export default function Body<M extends Model>({ columns, collection, onRowSelect
   }
 
   return (
-    <div className={css.body}>
-      {models.map((model, i) => (
-        <Row<M> columns={columns} model={model} onRowSelected={onRowSelected} key={String(i)} />
+    <div className={css.container}>
+      <div className={css.body}>
+        {models.map((model, i) => (
+        <Row<M> columns={columns} model={model} onRowSelected={onRowSelected} key={String(model.getId())} />
       ))}
+      </div>      
     </div>
   );
 }

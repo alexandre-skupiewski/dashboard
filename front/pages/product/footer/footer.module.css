@@ -1,6 +1,6 @@
 .footer {
   display: flex;  
-  padding: 5px 0px;
+  padding: 5px 5px;
   border-top: 1px solid #2b2b2b;
   align-items: center;
   justify-content: end;
@@ -29,5 +29,4 @@
   flex-grow: 1;
   justify-content: end;  
   column-gap: 5px;
-  padding-right: 4px;
 }

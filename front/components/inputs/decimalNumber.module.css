@@ -1,0 +1,14 @@
+.decimalNumber {
+  background-color: #313131;  
+  border: 1px solid #3a3a3a;
+  font-size: 14px;
+  line-height: 14px;
+  padding: 5px;
+  color: #c3cacc;
+  width: 100px;
+  text-align: end;
+}
+
+.decimalNumber::placeholder {
+  color: #838585;
+}

@@ -25,6 +25,9 @@ INSERT INTO orders (
     number,
     name,
     dueAt,
+    total,
+    vat,
+    vatTotal,
     createdAt,
     updatedAt
 ) VALUES (
@@ -33,7 +36,10 @@ INSERT INTO orders (
     %(type)s,
     %(number)s,
     %(name)s,
-    %(dueAt)s,  
+    %(dueAt)s, 
+    %(total)s, 
+    %(vat)s, 
+    %(vatTotal)s,  
     %(createdAt)s,
     NOW()
 )
@@ -61,6 +67,9 @@ for record in table:
             "number": record["NUM"],
             "name": record["LIB"],
             "dueAt": record["ECH"],
+            "total": record["DS2TTN"] or 0,
+            "vat": record["DS2TVA"] or 0,
+            "vatTotal": record["DS2TTC"] or 0,
             "createdAt": record["DTE"],
         }
 

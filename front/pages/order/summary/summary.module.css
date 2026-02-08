@@ -1,0 +1,35 @@
+.summary {
+  display: flex;   
+  flex-direction: column;
+  row-gap: 10px;    
+}
+
+.item {
+  display: flex;    
+  column-gap: 10px;
+  row-gap: 3px;  
+  align-items: center;
+}
+
+.itemLabel {
+  display: flex; 
+  flex-grow: 1;
+  color: #838585;
+  font-size: 12px;
+  line-height: 14px;
+  justify-content: end;
+}
+
+.itemLabel::after {
+  content: ":";
+  padding-left: 3px;
+}
+
+.itemValue {
+  display: flex; 
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 14px;
+  min-width: 70px;
+  justify-content: end;
+}

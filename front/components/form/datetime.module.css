@@ -1,0 +1,13 @@
+.datetime {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;  
+  align-items: flex-start;
+}
+
+.label {
+  display: flex;
+  font-size: 12px; 
+  line-height: 13px;
+  color: #c3cacc;
+}

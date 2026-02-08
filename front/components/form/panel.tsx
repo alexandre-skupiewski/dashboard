@@ -10,7 +10,7 @@ export interface Props {
 
 export default function Panel({children, hover = true, style} : Props) {
   return (
-    <div className={`${css.panel} ${hover ? css.hover : null}`} style={style}>
+    <div className={`${css.panel} ${hover ? css.hover : ""}`} style={style}>
       {children}
     </div>
   );

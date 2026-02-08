@@ -48,13 +48,20 @@ def search(
     query = f"""
         SELECT
             o.id,
+            o.type,
             o.laboruId,
             o.number,
             o.name,
+            o.total,
+            o.vat,
+            o.vatType,
+            o.vatRate,
+            o.vatTotal,
             o.createdAt,
             o.updatedAt,
             o.archived,
             o.archivedAt,
+            o.dueAt,
             c.id   AS clientId,
             c.name AS clientName,
             c.description AS clientDescription
@@ -77,13 +84,20 @@ def search(
     for row in rows:
         orders.append({
             "id": row["id"],
+            "type": row["type"],
             "laboruId": row["laboruId"],
             "number": row["number"],
             "name": row["name"],
+            "total": row["total"],
+            "vat": row["vat"],
+            "vatType": row["vatType"],
+            "vatRate": row["vatRate"],
+            "vatTotal": row["vatTotal"],
             "createdAt": row["createdAt"].isoformat() if row["createdAt"] else None,
             "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None,
             "archived": bool(row["archived"]),
             "archivedAt": row["archivedAt"].isoformat() if row["archivedAt"] else None,
+            "dueAt": row["dueAt"].isoformat() if row["dueAt"] else None,
             "client": {
                 "id": row["clientId"],
                 "name": row["clientName"],
@@ -104,13 +118,20 @@ def get(db: Db, orderId: int):
     query = """
         SELECT
             id,
+            type,
             laboruId, 
             number, 
-            name,               
+            name,  
+            total,
+            vat,
+            vatType,
+            vatRate,
+            vatTotal,             
             createdAt,
             updatedAt,
             archived,
-            archivedAt
+            archivedAt,
+            dueAt
         FROM orders
         WHERE id = %s
         LIMIT 1
@@ -125,13 +146,20 @@ def get(db: Db, orderId: int):
 
     return {
         "id": row["id"],
+        "type": row["type"],
         "laboruId": row["laboruId"],
         "number": row["number"], 
-        "name": row["name"],       
+        "name": row["name"], 
+        "total": row["total"], 
+        "vat": row["vat"], 
+        "vatRate": row["vatRate"], 
+        "vatType": row["vatType"], 
+        "vatTotal": row["vatTotal"],       
         "createdAt": row["createdAt"].isoformat() if row["createdAt"] else None,
         "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None,
         "archived": bool(row["archived"]),
         "archivedAt": row["archivedAt"].isoformat() if row["archivedAt"] else None,
+        "dueAt": row["dueAt"].isoformat() if row["dueAt"] else None,
     }
 
 def create(db: Db, data: dict):
@@ -166,6 +194,35 @@ def update(db: Db, orderId: int, data: dict):
     fields = []
     values = []
 
+    if "name" in data:
+        fields.append("name = %s")
+        values.append(data["name"])
+
+    if "total" in data:
+        fields.append("total = %s")
+        values.append(data["total"])
+
+    if "vat" in data:
+        fields.append("vat = %s")
+        values.append(data["vat"])
+
+    if "vatType" in data:
+        fields.append("vatType = %s")
+        values.append(data["vatType"])
+
+    if "vatRate" in data:
+        fields.append("vatRate = %s")
+        values.append(data["vatRate"])
+
+    if "vatTotal" in data:
+        fields.append("vatTotal = %s")
+        values.append(data["vatTotal"])
+
+    if "dueAt" in data:
+        fields.append("dueAt = %s")
+        values.append(data["dueAt"])
+
+    """
     if "archived" in data:
         fields.append("archived = %s")
         values.append(data["archived"])
@@ -174,6 +231,7 @@ def update(db: Db, orderId: int, data: dict):
             fields.append("archivedAt = NOW()")
         else:
             fields.append("archivedAt = NULL")
+    """
 
     fields.append("updatedAt = NOW()")
 

@@ -1,4 +1,5 @@
 import Api from "@/helpers/api"
+import { Models } from "@/helpers/models/models";
 
 export default class Model {
     protected static url: string;
@@ -9,7 +10,7 @@ export default class Model {
 
     constructor() {       
         this.uniqId = crypto.randomUUID();
-    }    
+    }  
 
     getKey(): string {
         const ctor = this.constructor as typeof Model;
@@ -39,8 +40,9 @@ export default class Model {
         return this;
     } 
 
-    update(model: this): this {
-        this.copy(model);
+    update(model?: this): this {
+        if(model)
+            this.copy(model);
 
         if (this.updateEvents)
             this.updateEvents.forEach(cb => cb());
@@ -49,6 +51,7 @@ export default class Model {
     } 
 
     clone(): this {
+        this.uniqId = crypto.randomUUID();
         return Object.assign(
             Object.create(Object.getPrototypeOf(this)),
             this
@@ -153,7 +156,10 @@ export default class Model {
         } else {
             const data = await Api.PUT(`${ctor.url}`, this.toJson());
             this.fromJson(data);
-        }        
+        } 
+        
+        if (this.updateEvents)
+            this.updateEvents.forEach(cb => cb());
     }
 
     bindUpdate(callback: () => void) {

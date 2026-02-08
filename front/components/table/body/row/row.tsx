@@ -4,7 +4,6 @@ import css from './row.module.css';
 import ColumnComp from "./column/column";
 import { Model } from "@/helpers/models/models";
 import { Column } from "../../table";
-import { useModel } from "@/helpers/models/models";
 
 interface RowProps<M extends Model> {
   columns: Column<M>[];
@@ -13,12 +12,11 @@ interface RowProps<M extends Model> {
 }
 
 export default function Row<M extends Model>({ columns, model, onRowSelected }: RowProps<M>) {
-  const [mod] = useModel<M>(model);
-
+  
   return (
     <div
       className={css.row}
-      onDoubleClick={() => onRowSelected?.(mod!)}
+      onDoubleClick={() => onRowSelected?.(model)}
     >      
       {columns.map((col) => {
         const CellComponent = col.component;
@@ -29,9 +27,9 @@ export default function Row<M extends Model>({ columns, model, onRowSelected }: 
             style={col.style}            
           >
             {CellComponent ? (
-              <CellComponent model={mod!} column={col} />
+              <CellComponent model={model} column={col} />
             ) : (
-              String(mod?.get(col.accessor))
+              String(model.get(col.accessor))
             )}
           </ColumnComp>
         );

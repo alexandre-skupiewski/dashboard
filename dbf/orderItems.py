@@ -105,7 +105,26 @@ for record in table:
             "vat": vat
         }
 
+        vatRate = 0
+        if record["TVX"]:           
+            vatRate = record["TVX"] * 100
+
+            updateOrderVatSql = """
+                UPDATE orders o
+                SET o.vatRate = (
+                    SELECT MAX(oi.vat)
+                    FROM orderItems oi
+                    WHERE oi.orderId = o.id
+                )
+                WHERE o.id = %s
+                """
+
         insertCursor.execute(sql, data)
+        insertCursor.execute(updateOrderVatSql, (orderId,))
+
+
+        
+
         
 conn.commit()
 insertCursor.close()

@@ -1,0 +1,17 @@
+.date {
+  background-color: #313131;  
+  border: 1px solid #3a3a3a;
+  font-size: 14px;
+  line-height: 14px;
+  padding: 5px;
+  color: #c3cacc;  
+  cursor: pointer;
+}
+
+.date::-webkit-calendar-picker-indicator {
+  filter: invert(78%) sepia(6%) saturate(120%) hue-rotate(150deg); /* couleur par défaut (#c3cacc) */
+}
+
+.date::placeholder {
+  color: #838585;
+}

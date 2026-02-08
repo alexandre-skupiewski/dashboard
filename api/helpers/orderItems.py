@@ -46,7 +46,10 @@ def search(
     query = f"""
         SELECT
             oi.id, 
-            oi.name,           
+            oi.name,
+            oi.price,
+            oi.amount,
+            oi.vat,           
             oi.createdAt,
             oi.updatedAt,            
             o.id   AS orderId,
@@ -70,7 +73,10 @@ def search(
     for row in rows:
         orders.append({
             "id": row["id"], 
-            "name": row["name"],           
+            "name": row["name"],
+            "price": row["price"],
+            "amount": row["amount"],
+            "vat": row["vat"],           
             "createdAt": row["createdAt"].isoformat() if row["createdAt"] else None,
             "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None,           
             "order": {
@@ -92,7 +98,10 @@ def get(db: Db, orderId: int):
     query = """
         SELECT
             id,  
-            name,                  
+            name,  
+            price,
+            amount,
+            vat,                
             createdAt,
             updatedAt
         FROM orderItems
@@ -109,7 +118,10 @@ def get(db: Db, orderId: int):
 
     return {
         "id": row["id"],        
-        "name": row["name"],       
+        "name": row["name"], 
+        "price": row["price"], 
+        "amount": row["amount"], 
+        "vat": row["vat"],       
         "createdAt": row["createdAt"].isoformat() if row["createdAt"] else None,
         "updatedAt": row["updatedAt"].isoformat() if row["updatedAt"] else None        
     }
@@ -146,14 +158,14 @@ def update(db: Db, orderId: int, data: dict):
     fields = []
     values = []
 
-    if "archived" in data:
+    """ if "archived" in data:
         fields.append("archived = %s")
         values.append(data["archived"])
 
         if data["archived"]:
             fields.append("archivedAt = NOW()")
         else:
-            fields.append("archivedAt = NULL")
+            fields.append("archivedAt = NULL")"""
 
     fields.append("updatedAt = NOW()")
 

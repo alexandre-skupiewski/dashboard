@@ -2,7 +2,8 @@
 
 import Table from "@/components/table/table";
 import { Column } from "@/components/table/table";
-import FileInvoiceDollarSvg from "@/components/svgs/fileInvoiceDollar"
+import MoneyCheckDollarSvg from "@/components/svgs/moneyCheckDollar"
+import MoneyCheckSvg from "@/components/svgs/moneyCheck"
 import { Pages, Page } from '@/helpers/pages'
 import Order from "@/pages/order/order";
 import { OrderModel, OrderCollection } from "@/models/orders";
@@ -25,7 +26,10 @@ export default function Orders({ type, client  }: Props) {
 
   const onRowSelected = (model: OrderModel) => {
     const menuId = type == "order" ? "orders" : "offers";
-    const page = new Page(() => <Order order={model} />, "order." + model.getId(), `Commande | ${client.name} | ${model.name}`, FileInvoiceDollarSvg, menuId);
+    const icon = model.type === "order" 
+                  ? MoneyCheckDollarSvg
+                  : MoneyCheckSvg
+    const page = new Page(() => <Order order={model} />, "order." + model.getId(), `${model.name} > ${client.name}`, icon, menuId);
     Pages.open(page)
   };
 

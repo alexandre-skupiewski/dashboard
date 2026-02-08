@@ -9,6 +9,7 @@ import PlusSvg from "@/components/svgs/plus"
 import Loader from '@/components/loaders/loader2';
 
 interface Props {
+  type: "order" | "offer";
   onSave?: () => void;
   onReset?: () => void;
   onRefresh?: () => void;
@@ -16,7 +17,7 @@ interface Props {
   loadingText?: string | null;
   canSave?: boolean;
 }
-export default function Footer({ onSave, onReset, onRefresh, onAdd, loadingText, canSave }: Props) {  
+export default function Footer({type, onSave, onReset, onRefresh, onAdd, loadingText, canSave }: Props) {  
   return (
     <div className={css.footer}>
       {
@@ -30,15 +31,27 @@ export default function Footer({ onSave, onReset, onRefresh, onAdd, loadingText,
       <div className={css.right}> 
         <Button 
           key={"new"} 
-          title="Ajouter un nouveau client" 
+          title={
+            type === "order" 
+              ? "Ajouter une nouvelle commande" 
+              : "Ajouter une nouvelle offre"
+            } 
           svg={PlusSvg} 
           onClick={onAdd}
         >
-            Nouveau client
+          {
+            type === "order" 
+              ? "Nouvelle commande" 
+              : "Nouvelle offre"
+          }
         </Button>       
         <Button 
           key={"refresh"} 
-          title="Recharger le client" 
+          title={
+            type === "order" 
+              ? "Recharger la commande" 
+              : "Recharger l'offre"
+            }
           svg={RotateSvg} 
           onClick={onRefresh}
         >

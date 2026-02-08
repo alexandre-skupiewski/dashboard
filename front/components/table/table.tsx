@@ -8,24 +8,25 @@ import Footer from "./footer/footer";
 import { Model, Collection } from "@/helpers/models/models";
 
 export interface Column<M extends Model> {
-  title: string;
-  accessor: string;
+  title: string,
+  accessor: string,
   style: CSSProperties,
-  component?: ComponentType<{ model: M; column: Column<M> }>;
+  component?: ComponentType<{ model: M; column: Column<M> }>  
 }
 
 interface TableProps<M extends Model> {
-  columns: Column<M>[];
-  onRowSelected?: (model: M) => void;
-  collection?: Collection<M>;
+  columns: Column<M>[],
+  onRowSelected?: (model: M) => void,
+  collection?: Collection<M>,
+  onAdd?: () => void
 }
 
-export default function Table<M extends Model>({ columns, onRowSelected, collection }: TableProps<M>) {  
+export default function Table<M extends Model>({ columns, onRowSelected, collection, onAdd }: TableProps<M>) {  
   return (
     <div className={css.table}>
       <Header<M> columns={columns} />
       <Body<M> columns={columns} collection={collection} onRowSelected={onRowSelected} />
-      <Footer<M> collection={collection}/>
+      <Footer<M> collection={collection} onAdd={onAdd}/>
     </div>
   );
 }

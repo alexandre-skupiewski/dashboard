@@ -37,9 +37,11 @@ export default class Collection<M extends Model> {
         this.models = models;
     }
 
-    /*add(model: M): void {
+    add(model: M): void {
         this.models.push(model);
-    }*/
+        if (this.updateEvents)
+            this.updateEvents.forEach(cb => cb());
+    }
 
     bindUpdate(callback: () => void) {
         if (!this.updateEvents.includes(callback)) 

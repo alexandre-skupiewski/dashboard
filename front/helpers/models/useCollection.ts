@@ -3,8 +3,9 @@ import { Models, Model, Collection } from "@/helpers/models/models";
 
 export default function useCollection<C extends Collection<M>, M extends Model>(
   initialCollection: C
-): [M[], number, number, number, number] {
+): [ Collection<M>, M[], number, number, number, number] {
 
+  const [collection, setCollection] = useState<Collection<M>>(initialCollection);
   const [models, setModels] = useState<M[]>(initialCollection.getModels());
   const [page, setPage] = useState<number>(initialCollection?.page || 0);
   const [pageSize, setPageSize] = useState<number>(initialCollection?.pageSize || 0);
@@ -16,7 +17,7 @@ export default function useCollection<C extends Collection<M>, M extends Model>(
     setTotal(initialCollection.total);
     setPageCount(initialCollection.pageCount);
     setPage(initialCollection.page);
-    setPageSize(initialCollection.pageSize);
+    setPageSize(initialCollection.pageSize);   
   }
 
   useEffect(() => {
@@ -28,5 +29,5 @@ export default function useCollection<C extends Collection<M>, M extends Model>(
     };
   }, []);
 
-  return [models, page, pageSize, total, pageCount];
+  return [collection, models, page, pageSize, total, pageCount];
 }

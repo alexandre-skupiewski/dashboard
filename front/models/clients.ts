@@ -6,42 +6,26 @@ export class ClientModel extends Model {
   protected static url: string = "clients";
   protected static key: string = "client";
   protected static attributeId: string = "id";
-  id: number | null;
-  laboruId: string;
-  name: string;
-  description: string;
-  email: string;
-  vat: string;
-  vatType: string;
-  vatRate: string;
-  phone1: string;
-  phone2: string;
-  phone3: string;
-  phone4: string;
-  archived: boolean;
-  createdAt: string;
-  archivedAt: string;
-  updatedAt: string;
+  id: number | null = null;
+  laboruId: string = "";
+  name: string = "";
+  description: string = "";
+  email: string = "";
+  vat: string = "";
+  vatType: string = "";
+  vatRate: string = "";
+  phone1: string = "";
+  phone2: string = "";
+  phone3: string = "";
+  phone4: string = "";
+  archived: boolean = false;
+  createdAt: string = "";
+  archivedAt: string = "";
+  updatedAt: string = "";
 
-  constructor(
-    id?: number) {
+  constructor(id?: number) {
     super();
-    this.id = id ? id : null;
-    this.laboruId = "";
-    this.name = "";
-    this.description = "";
-    this.email = "";
-    this.vat = "";
-    this.vatType = "";
-    this.vatRate = "";
-    this.phone1 = "";
-    this.phone2 = "";
-    this.phone3 = "";
-    this.phone4 = "";
-    this.archived = false;
-    this.archivedAt = "";
-    this.createdAt = "";
-    this.updatedAt = "";
+    this.id = id || null;    
   }
 }
 
@@ -67,7 +51,7 @@ export class ClientCollection extends Collection<ClientModel> {
     const items = data.items.map(
       (c: any) => {
         const item = Models.get<ClientModel>("client." + c.id, () => new ClientModel(c.id));
-        item.fromJson(c);
+        item!.fromJson(c);
         return item;
       }
     );
