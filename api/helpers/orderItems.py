@@ -135,6 +135,11 @@ def create(db: Db, data: dict):
         columns.append("orderId")
         placeholders.append("%s")
         values.append(data["orderId"])
+
+    if "vat" in data:
+        columns.append("vat")
+        placeholders.append("%s")
+        values.append(data["vat"])
     
     columns.extend(["createdAt", "updatedAt"])
     placeholders.extend(["NOW()", "NOW()"])
@@ -172,3 +177,14 @@ def update(db: Db, orderId: int, data: dict):
     #time.sleep(5)
 
     return get(db, orderId)
+
+def delete(db: Db, id: int) -> bool:
+    query = """
+        DELETE FROM orderItems
+        WHERE id = %s
+        LIMIT 1
+    """
+    cursor = db.execute(query, (id,))
+    db.conn.commit()
+
+    return cursor.rowcount > 0

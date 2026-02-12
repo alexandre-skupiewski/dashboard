@@ -1,0 +1,14 @@
+.delete {
+  display: flex; 
+  width: 18px;
+  height: 18px;
+  path {
+    fill: #838585;
+  }
+}
+
+.delete:hover {
+  path {
+    fill: #c3cacc;
+  }
+}

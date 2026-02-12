@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import css from './content.module.css';
 import Tabs from './tabs/tabs'
 import { Pages, Page } from '@/helpers/pages'
-import CirclePlay from '@/components/svgs/circlePlay';
+import FireFlameCurvedSvg from '@/components/svgs/fireFlameCurved';
 
 export default function Content() {
   const [pages, setPages] = useState<any[]>([]);
@@ -43,7 +43,7 @@ export default function Content() {
               })
             ) : (
               <div className={css.empty}>
-                <div className={css.emptyIcon}><CirclePlay /></div>
+                <div className={css.emptyIcon}><FireFlameCurvedSvg /></div>
               </div>
             )
           }

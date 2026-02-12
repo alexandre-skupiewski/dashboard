@@ -10,6 +10,7 @@ import PriceColumn from "./columns/price";
 import TotalColumn from "./columns/total";
 import VatColumn from "./columns/vat";
 import VatPriceColumn from "./columns/vatPrice";
+import DeleteColumn from "./columns/delete";
 import { OrderModel } from "@/models/orders";
 import Panel from "@/components/form/panel";
 
@@ -25,16 +26,11 @@ export default function Items({ order } : Props) {
     { title: "Total", accessor: "total", style: { flexBasis: "100px", justifyContent: 'end' }, component: TotalColumn },    
     { title: "TVA", accessor: "vat", style: { flexBasis: "100px", justifyContent: 'end' }, component: VatColumn},
     { title: "Prix TVA Inc.", accessor: "vatPrice", style: { flexBasis: "100px", justifyContent: 'end' }, component: VatPriceColumn }, 
-    //{ title: "", accessor: "delete", style: { flexBasis: "100px" }, component: VatPriceColumn },  
+    { title: "", accessor: "delete", style: { flexBasis: "30px", justifyContent: 'end' }, component: DeleteColumn },  
   ];  
 
   function onAdd() {
-    const newOrderItem = new OrderItemModel();
-    newOrderItem.order = order;
-    newOrderItem.save().then(() => {
-      order.items.add(newOrderItem);
-      //order.items.fetch();
-    });    
+    order.addOrderItem();    
   }
 
   return (

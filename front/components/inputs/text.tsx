@@ -37,7 +37,7 @@ export default function Text({
       tabIndex={tabIndex} 
       placeholder={placeholder}
       className={`${inputCss.input} ${textCss.text}`}
-      value={value}
+      value={value || ""}
       onChange={change} 
       style={style}
     />

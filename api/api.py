@@ -125,3 +125,7 @@ async def createOrderItem(request: Request):
 async def updateOrderItem(id: int, request: Request):
     data = await request.json()
     return orderItems.update(db, id, data)  
+
+@app.delete("/order/items/{id}")
+async def updateOrderItem(id: int):   
+    return orderItems.delete(db, id)  

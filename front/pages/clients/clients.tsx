@@ -14,12 +14,12 @@ export default function Clients() {
   const columns: Column<ClientModel>[] = [     
     { title: "Nom", accessor: "name", style: { flexGrow: 1 }, component: NameColumn },
     { title: "Email", accessor: "email", style: { flexBasis: "300px" }, component: EmailColumn },
-    { title: "Création", accessor: "createdAt", style: { flexBasis: "100px" }, component: DateColumn },
-    { title: "Modification", accessor: "updatedAt", style: { flexBasis: "100px" }, component: DateColumn }
+    { title: "Création", accessor: "createdAt", style: { flexBasis: "100px", justifyContent: "end", textAlign: "end" }, component: DateColumn },
+    { title: "Modification", accessor: "updatedAt", style: { flexBasis: "100px", justifyContent: "end", textAlign: "end" }, component: DateColumn }
   ];
 
   const onRowSelected = (model: ClientModel) => {
-    const page = new Page(() => <Client client={model} />, "client." + model.getId(), `${model.name}`, UserSvg, "clients");
+    const page = new Page(() => <Client client={model} />, "client." + model.getId(), `${model.get("name")}`, UserSvg, "clients");
     Pages.open(page)
   };
 

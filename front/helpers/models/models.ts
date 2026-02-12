@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import Model from "@/helpers/models/model";
 
 export { default as Model } from "@/helpers/models/model";
@@ -27,7 +26,7 @@ export class Models {
 
   static get<M extends Model>(
     key: string,
-    loader?: () => M
+    loader?: () => M | null
   ): M | null {
     const existing = this.models.get(key)
 

@@ -12,8 +12,8 @@ import NameColumn from "./columns/name";
 export default function Products() {  
   const columns: Column<ProductModel>[] = [     
     { title: "Nom", accessor: "name", style: { flexGrow: 1 }, component: NameColumn },
-    { title: "Création", accessor: "createdAt", style: { flexBasis: "100px" }, component: DateColumn },
-    { title: "Modification", accessor: "updatedAt", style: { flexBasis: "100px" }, component: DateColumn }
+    { title: "Création", accessor: "createdAt", style: { flexBasis: "100px", justifyContent: "end", textAlign: "end" }, component: DateColumn },
+    { title: "Modification", accessor: "updatedAt", style: { flexBasis: "100px", justifyContent: "end", textAlign: "end" }, component: DateColumn }
   ];
 
   const onRowSelected = (model: ProductModel) => {

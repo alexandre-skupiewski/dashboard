@@ -2,21 +2,16 @@
 
 import { useEffect, useState } from "react";
 import css from './order.module.css';
-import CircleExclamationSvg from "@/components/svgs/circleExclamation"
+import { CircleExclamation as CircleExclamationSvg, User as UserSvg } from "@/components/svgs"
 import Loader from "@/components/loaders/loader2"
-import { OrderModel } from "@/models/orders";
-import UseOrder from "@/models/useOrder"
-import UseClient from "@/models/useClient"
-import FormText from "@/components/form/text"
-import FormDatetime from "@/components/form/datetime"
-import Panel from "@/components/form/panel";
-import Infos from "./infos/infos"
-import Summary from "./summary/summary"
-import Footer from "./footer/footer"
+import { Text, Panel, Datetime} from "@/components/form";
 import ErrorModal from "@/components/modals/error";
 import ConfirmModal from "@/components/modals/confirm";
-import UserSvg from "@/components/svgs/user"
+import { OrderModel } from "@/models/orders";
+import UseModel from "@/helpers/models/useModel"
 import { Pages, Page } from '@/helpers/pages'
+import Infos from "./infos/infos"
+import Footer from "./footer/footer"
 import OrderItems from "./items/items";
 
 interface Props {
@@ -24,20 +19,7 @@ interface Props {
 }
 
 export default function Order({ order }: Props) {
-  const [
-      [, name,,,,,, dueAt,,,,, isDirty],
-      [
-        setName, 
-        setDueAt,    
-        setArchived,
-        reset,
-        save,
-        refresh,
-        commit
-      ]
-    ] = UseOrder(order);
-
-  const [[,,,,,, vatRate, vatType ]] = UseClient(order.client!);
+  const [data, tmpData, isDirty, set, reset, save, refresh] = UseModel(order);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);   
@@ -53,8 +35,7 @@ export default function Order({ order }: Props) {
   useEffect(() => {
     const load = async () => {
       try {
-        await order.fetch();       
-        await order.client?.fetch();
+        await order.fetch();  
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -69,7 +50,7 @@ export default function Order({ order }: Props) {
     load();
   }, []);
 
-  useEffect(() => {    
+  /*useEffect(() => {    
     order.items.getModels().forEach((model) => {
       if(order.client?.vatType === "") {
         if(order.client?.vatRate === "0%")
@@ -93,7 +74,7 @@ export default function Order({ order }: Props) {
 
      order.calc();
      order.update();    
-  }, [vatRate, vatType]);
+  }, [vatRate, vatType]);*/
 
   if (loading) {
     return (
@@ -119,32 +100,31 @@ export default function Order({ order }: Props) {
         <div className={css.center}>
           <div className={css.form}>
             <Panel>
-              <FormText
+              <Text
                 key={"name"}
                 title="Nom de la commande"
                 label="Nom"
-                value={name}
+                value={tmpData["name"]}
                 onChange={(value) => {
-                  setName(value);
+                  set("name", value);
                 }}
               />  
-              <FormDatetime
+              <Datetime
                 key={"dueAt"}
                 title="Date d'échéance"
                 label="Date d'échéance"
-                value={dueAt}
+                value={tmpData["dueAt"]}
                 onChange={(value) => {
-                  setDueAt(value);
+                  set("dueAt", value);
                 }}
               />      
             </Panel>         
           </div>          
           <OrderItems order={order}/>          
         </div>
-        <Summary order={order}/>
       </div>
       <Footer
-        type={order.type}
+        type={tmpData["type"]}
         onSave={() => {
           try {
             setLoadingText("Sauvegarde en cours...");
@@ -153,7 +133,7 @@ export default function Order({ order }: Props) {
               setError(null);
 
               //if (id)
-                Pages.updateTitle("order." + order.id, `${name} > ${order.client?.name}`);
+                Pages.updateTitle("order." + order.getId(), `${tmpData["name"]} > ${order.client?.get("name")}`);
               //else {
                 //Pages.updateTitle("product.new", product.name);
                 //Pages.updateId("product.new", "product." + product.id);

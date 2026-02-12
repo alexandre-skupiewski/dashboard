@@ -26,10 +26,10 @@ export default function Orders({ type, client  }: Props) {
 
   const onRowSelected = (model: OrderModel) => {
     const menuId = type == "order" ? "orders" : "offers";
-    const icon = model.type === "order" 
+    const icon = model.get("type") === "order" 
                   ? MoneyCheckDollarSvg
                   : MoneyCheckSvg
-    const page = new Page(() => <Order order={model} />, "order." + model.getId(), `${model.name} > ${client.name}`, icon, menuId);
+    const page = new Page(() => <Order order={model} />, "order." + model.getId(), `${model.get("name")} > ${client.get("name")}`, icon, menuId);
     Pages.open(page)
   };
 
@@ -37,7 +37,7 @@ export default function Orders({ type, client  }: Props) {
     <Table<OrderModel>
       columns={columns}
       onRowSelected={onRowSelected}
-      collection={new OrderCollection(type, client.id)}
+      collection={new OrderCollection(type, client.getId())}
     />
   );
 }

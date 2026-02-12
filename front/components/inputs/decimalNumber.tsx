@@ -18,26 +18,19 @@ export default function DecimalNumberInput({
   title = "", 
   min,
   max,
+  step = 1,
   precision = 0,
   tabIndex = 0, 
   value: originalValue = 0,
   onChange,
   style
 }: NumberProps) {
-  const [raw, setRaw] = useState<string>(originalValue.toFixed(precision));
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = e.target.value.replace(',', '.');
-    if (/^-?\d*\.?\d*$/.test(v))
-      setRaw(v);
-  };
 
-  const handleBlur = () => {
-    let n = Number(raw);
+  const [raw, setRaw] = useState<string>(
+    originalValue.toFixed(precision)
+  );
 
-    if (Number.isNaN(n))
-      n = originalValue;
-
+  const clampAndFormat = (n: number) => {
     if (min !== undefined) n = Math.max(min, n);
     if (max !== undefined) n = Math.min(max, n);
 
@@ -46,7 +39,44 @@ export default function DecimalNumberInput({
     setRaw(n.toFixed(precision));
     onChange?.(n);
   };
-  
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value.replace(',', '.');
+    if (/^-?\d*\.?\d*$/.test(v)) {
+      setRaw(v);
+    }
+  };
+
+  const apply = () => {
+    let n = Number(raw);
+    if (Number.isNaN(n)) n = originalValue;
+    clampAndFormat(n);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    let n = Number(raw);
+    if (Number.isNaN(n)) n = originalValue;
+
+    /*if (e.key === "ArrowUp") {
+      e.preventDefault();
+      clampAndFormat(n + step);
+    }
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      clampAndFormat(n - step);
+    }*/
+
+    if (e.key === "Enter" || e.key === " ") {
+      apply();
+    }
+  };
+
+  useEffect(() => {
+    setRaw(originalValue.toFixed(precision));
+  }, [originalValue, precision]);
+
+
   return (
     <input
       type="text"
@@ -56,7 +86,8 @@ export default function DecimalNumberInput({
       className={`${inputCss.input} ${decimalNumberCss.decimalNumber}`}
       value={raw}
       onChange={handleChange}
-      onBlur={handleBlur}
+      onBlur={apply}
+      onKeyDown={handleKeyDown}
       style={style}
     />
   );

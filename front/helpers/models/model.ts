@@ -1,10 +1,47 @@
 import Api from "@/helpers/api"
 import { Models } from "@/helpers/models/models";
 
+export class ModelProperty<Type> {
+    private id: string = "";
+    private originalValue: Type;
+    private value: Type;
+
+    constructor(id: string, value: Type) {       
+        this.id = id;
+        this.originalValue = value;
+        this.value = this.originalValue;
+    }  
+
+    getId(): string {
+        return this.id;
+    }
+
+    isDirty(): boolean {
+        return this.originalValue !== this.value;
+    }
+
+    setValue(value: Type) {
+        this.value = value;
+    }
+
+    setTmpValue(value: Type) {
+        this.originalValue = value;
+    }
+
+    getValue(): Type {
+        return this.value;
+    }
+
+    getTmpValue(): Type {
+        return this.originalValue;
+    }
+}
+
 export default class Model {
     protected static url: string;
     protected static key: string = "";
     protected static attributeId: string = "";
+    protected properties: ModelProperty<any>[] = [];
     public uniqId: string = "";
     private updateEvents: Array<() => void> = [];
 
@@ -14,133 +51,170 @@ export default class Model {
 
     getKey(): string {
         const ctor = this.constructor as typeof Model;
-        return ctor.key + "." + (this as any)[ctor.attributeId];
+        return ctor.key + "." + this.get(ctor.attributeId);
     }
 
-    getId(): string {
+    getId(): any {
         const ctor = this.constructor as typeof Model;
-        return (this as any)[ctor.attributeId];
+        return this.get(ctor.attributeId);
     }
 
-    get(attr: string): any {
-        return (this as any)[attr];
+    getProperties(): ModelProperty<any>[] {
+        return this.properties;
     }
 
-    set(attr: string, value: any): any {
-        (this as any)[attr] = value;
+    addProperty(property: ModelProperty<any>) {
+        this.properties.push(property);
     }
 
-    copy(model: this): this {
-        Object.keys(model).forEach(key => {
-            if (key in this) {
-                (this as any)[key] = (model as any)[key];
+    get(propertyId: string): any {
+        let value = null;
+        this.properties.forEach(p => {
+            if(p.getId() === propertyId) {
+                value =  p.getValue();
             }
         });
 
-        return this;
-    } 
+        return value;
+    }     
 
-    update(model?: this): this {
-        if(model)
-            this.copy(model);
+    set(propertyId: string, value: any): any {
+        this.properties.forEach(p => {
+            if(p.getId() === propertyId) {
+                p.setValue(value);
+            }
+        });
+    }
 
+    getTmp(propertyId: string): any {
+        let value = null;
+        this.properties.forEach(p => {
+            if(p.getId() === propertyId) {
+                value =  p.getTmpValue();
+            }
+        });
+
+        return value;
+    }
+
+    setTmp(propertyId: string, value: any): any {
+        this.properties.forEach(p => {
+            if(p.getId() === propertyId) {
+                p.setTmpValue(value);
+            }
+        });
+    }
+
+    isDirty(): boolean {
+        let isDirty = false;
+        this.properties.forEach(p => {
+            if(p.isDirty())
+                isDirty = true;
+        });
+        return isDirty;
+    }
+
+    reset() {
+        this.properties.forEach(p => {
+            p.setTmpValue(p.getValue());
+        });
+    }
+
+    commit() {
+        this.properties.forEach(p => {
+            p.setValue(p.getTmpValue());
+        });
+    }
+
+    update() {
         if (this.updateEvents)
             this.updateEvents.forEach(cb => cb());
-        
-        return this;
     } 
 
-    clone(): this {
-        this.uniqId = crypto.randomUUID();
-        return Object.assign(
+    clone(): this {        
+        const newObject = Object.assign(
             Object.create(Object.getPrototypeOf(this)),
             this
         );
+
+        return newObject;
     }
 
     async fetch(): Promise<void> {
         const ctor = this.constructor as typeof Model & { url: string };
-
-        const id = (this as any)[ctor.attributeId];
-        if (id == null) {
-            throw new Error("Impossible de fetch : id manquant");
-        }
-
-        const data = await Api.GET(`${ctor.url}/${id}`); 
+        
+        const data = await Api.GET(`${ctor.url}/${this.getId()}`); 
         this.fromJson(data);
+    }
+
+    async refresh(): Promise<void> {
+        await this.fetch();
+        await this.update();
     }
     
     fromJson(json: Record<string, any>): void {
-        Object.keys(json).forEach(key => {
-            if (key in this) {
-                const currentValue = (this as any)[key];
-                const incomingValue = json[key];
-
-                // string: null -> ""
-                if (
-                    incomingValue === null &&
-                    typeof currentValue === "string"
-                ) {
-                    (this as any)[key] = "";
-                    return;
-                }
-
-                // boolean: null -> false
-                if (
-                    incomingValue === null &&
-                    typeof currentValue === "boolean"
-                ) {
-                    (this as any)[key] = false;
-                    return;
-                }
-
-                (this as any)[key] = incomingValue;
+        this.properties.forEach(p => {            
+            if(typeof p.getValue() === "string") {
+                if(json[p.getId()]) {
+                    p.setValue(json[p.getId()] || "");
+                    p.setTmpValue(p.getValue());
+                }                    
             }
-        });
+
+            if(typeof p.getValue() === "boolean") {
+                if(json[p.getId()]) {
+                    p.setValue(json[p.getId()] || false);
+                    p.setTmpValue(p.getValue());
+                }
+            }
+
+            if(typeof p.getValue() === "number") {
+                if(json[p.getId()]) {
+                    p.setValue(json[p.getId()] || 0);
+                    p.setTmpValue(p.getValue());
+                }
+            }
+        });   
     }
 
     toJson(): Record<string, any> {
         const json: Record<string, any> = {};
-
-        Object.keys(this).forEach(key => {
-            const value = (this as any)[key];
-            if (typeof value !== "function") {
-                json[key] = value;
+        this.properties.forEach(p => {            
+            if(typeof p.getValue() === "string") {
+                json[p.getId()] = p.getValue();
             }
-        });
+
+            if(typeof p.getValue() === "boolean") {
+                json[p.getId()] = p.getValue();
+            }
+
+            if(typeof p.getValue() === "number") {
+                json[p.getId()] = p.getValue();
+            }
+        });   
 
         return json;
     }
 
-    hasChanged(other: this): boolean {
-        let changed = false;
-
-        Object.keys(this).forEach(key => {
-            if (key in other) {
-                const valueA = (this as any)[key];
-                const valueB = (other as any)[key];
-
-                if (valueA !== valueB) {
-                    changed = true;
-                }
-            }
-        });
-
-        return changed;
-    }
-
     async save(): Promise<void> {    
         const ctor = this.constructor as typeof Model & { url: string };
-
-        const id = (this as any)[ctor.attributeId];       
         
-        if(id) {            
-            const data = await Api.PATCH(`${ctor.url}/${id}`, this.toJson());
+        if(this.getId() >= 0) {            
+            const data = await Api.PATCH(`${ctor.url}/${this.getId()}`, this.toJson());
             this.fromJson(data);
         } else {
             const data = await Api.PUT(`${ctor.url}`, this.toJson());
             this.fromJson(data);
         } 
+        
+        if (this.updateEvents)
+            this.updateEvents.forEach(cb => cb());
+    }
+
+    async delete(): Promise<void> {    
+        const ctor = this.constructor as typeof Model & { url: string };
+          
+        const data = await Api.DELETE(`${ctor.url}/${this.getId()}`);
         
         if (this.updateEvents)
             this.updateEvents.forEach(cb => cb());
